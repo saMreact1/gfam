@@ -1,0 +1,96 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Attendees</mat-card-title>
+
+        <div class="actions">
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Search Attendees</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Search by name, email, city...">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Filter by Tag</mat-label>
+                <mat-select [(value)]="tagFilter" (selectionChange)="applyTagFilter()">
+                    <mat-option value="all">All Users</mat-option>
+                    <mat-option value="tagged">Tagged</mat-option>
+                    <mat-option value="untagged">Untagged</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="downloadCSV()">
+            <mat-icon>download</mat-icon> Download List
+        </button>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="table-container">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+
+                <!-- First Name -->
+                <ng-container matColumnDef="firstName">
+                    <th mat-header-cell *matHeaderCellDef> First Name </th>
+                    <td mat-cell *matCellDef="let element">{{element.firstName}}</td>
+                </ng-container>
+
+                <!-- Last Name -->
+                <ng-container matColumnDef="lastName">
+                    <th mat-header-cell *matHeaderCellDef> Last Name </th>
+                    <td mat-cell *matCellDef="let element">{{element.lastName}}</td>
+                </ng-container>
+
+                <!-- Email -->
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef> Email </th>
+                    <td mat-cell *matCellDef="let element">{{element.email}}</td>
+                </ng-container>
+
+                <!-- Phone -->
+                <ng-container matColumnDef="phone">
+                    <th mat-header-cell *matHeaderCellDef> Phone </th>
+                    <td mat-cell *matCellDef="let element">{{element.phone}}</td>
+                </ng-container>
+
+                <!-- Role -->
+                <ng-container matColumnDef="role">
+                    <th mat-header-cell *matHeaderCellDef> Role </th>
+                    <td mat-cell *matCellDef="let element">{{element.role}}</td>
+                </ng-container>
+
+                <!-- Gender -->
+                <ng-container matColumnDef="gender">
+                    <th mat-header-cell *matHeaderCellDef> Gender </th>
+                    <td mat-cell *matCellDef="let element">{{element.gender}}</td>
+                </ng-container> 
+
+                <!-- Prayer Slot -->
+                <ng-container matColumnDef="prayer">
+                    <th mat-header-cell *matHeaderCellDef> Prayer Slot </th>
+                    <td mat-cell *matCellDef="let element">{{element.prayer}}</td>
+                </ng-container>
+
+                <!-- Tag Status -->
+                <ng-container matColumnDef="tagAssigned">
+                    <th mat-header-cell *matHeaderCellDef> Tag Status </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span *ngIf="element.tagAssigned; else untagged" class="tagged">✅ Tagged</span>
+                        <ng-template #untagged>
+                            <span class="tag">
+                                ❌ Untagged
+                                <button mat-icon-button color="warn" (click)="removeUser(element)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </span>
+                        </ng-template>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <!-- <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator> -->
+        </div>
+    </mat-card-content>
+</mat-card>

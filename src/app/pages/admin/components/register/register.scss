@@ -1,0 +1,91 @@
+.registration-wrapper {
+  display: flex;
+  flex-direction: column;
+  // background: #b23838;
+
+  .title {
+    color: rgb(41, 33, 33);
+    padding: 2rem;
+    text-align: center;
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .form-container {
+    // background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+
+    @media (max-width: 480px) {
+      padding: 0;
+    }
+
+    .registration-form {
+      background: #e6c1c158;
+      width: 100%;
+      max-width: 500px;
+      gap: 1rem;
+      padding: 1rem 2rem 2rem;
+      border-radius: 32px;
+      box-shadow: 2px 3px 10px rgb(40 32 32 / 39%);
+
+      @media (max-width: 400px) {
+        padding: 1rem;
+      }
+
+      h2 {
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .full-width {
+        width: 100%;
+
+        ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+            background-color: transparent;
+        }
+      }
+
+      div {
+        display: flex;
+        gap: 1rem;
+
+        @media (max-width: 480px) {
+          display: block;
+        }
+      }
+
+      button {
+        margin-top: 1rem;
+        padding: 0.75rem 2.5rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .registration-wrapper {
+    // flex-direction: column;
+
+    .illustration {
+      flex: none;
+      height: 35vh;
+    }
+
+    .form-container {
+      flex: 1;
+      height: 65vh;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,47 @@
+<div class="landing-container">
+  <!-- Hero Section -->
+  <div class="hero" [ngStyle]="{'background-image': 'url(' + images[0] + ')'}">
+    <div class="overlay">
+      <div class="hero-content">
+        <h1>72 HOURS INTERCESSION 2025</h1>
+        <h3>Theme: <span>“Behold, the TABERNACLE of God”</span></h3>
+
+        <!-- Countdown -->
+        <div class="countdown">
+          <div class="time-box">
+            <strong>{{ timeLeft.days }}</strong><span>Days</span>
+          </div>
+          <div class="time-box">
+            <strong>{{ timeLeft.hours }}</strong><span>Hours</span>
+          </div>
+          <div class="time-box">
+            <strong>{{ timeLeft.minutes }}</strong><span>Mins</span>
+          </div>
+          <div class="time-box">
+            <strong>{{ timeLeft.seconds }}</strong><span>Secs</span>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <button mat-flat-button color="accent" class="cta-btn" routerLink="/register">
+          Register Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carousel Section -->
+  <div class="carousel">
+    <div 
+      class="carousel-track"
+    >
+      <img *ngFor="let img of images" [src]="img" alt="Program image">
+      <img *ngFor="let img of images" [src]="img" alt="Program image duplicate">
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <mat-toolbar class="footer">
+    <span>© 2025 Church Name. All Rights Reserved.</span>
+  </mat-toolbar>
+</div>

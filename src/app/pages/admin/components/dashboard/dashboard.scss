@@ -1,0 +1,67 @@
+.content {
+    padding: 2rem;
+
+    @media (max-width: 480px) {
+      padding: 0;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        align-items: stretch;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 1rem .5rem .5rem;
+
+        h2 {
+            font-size: 2rem;
+            color: #1976d2;
+        }
+    }
+
+    .table-card {
+        padding: 1rem 1rem .5rem;
+        margin-top: 1rem;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        margin-top: .5rem;
+    }
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  align-items: stretch;
+
+  mat-card-title {
+    padding: .7rem;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  }
+  @media (max-width: 400px) {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-height: 300px; /* keeps charts sleek */
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+

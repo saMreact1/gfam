@@ -1,0 +1,44 @@
+<div class="code-checker-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Attendee Code Checker</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form (ngSubmit)="checkCode()">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Enter Code</mat-label>
+          <input matInput [(ngModel)]="enteredCode" name="code" required />
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" type="submit">
+          Check Code
+        </button>
+      </form>
+
+      <!-- Show results -->
+      <div *ngIf="attendee" class="result">
+        <h3>Attendee Details</h3>
+        <p><strong>Name:</strong> {{ attendee.firstName }} {{ attendee.lastName }}</p>
+        <p><strong>Email:</strong> {{ attendee.email }}</p>
+        <p><strong>Phone:</strong> {{ attendee.phone }}</p>
+        <p><strong>Role:</strong> {{ attendee.role }}</p>
+        <p><strong>Gender:</strong> {{ attendee.gender }}</p>
+        <p><strong>Affiliation:</strong> {{ attendee.affiliation }}</p>
+        <p><strong>City/State:</strong> {{ attendee.city }}, {{ attendee.state }}</p>
+        <p><strong>Nursing/Pregnant:</strong> {{ attendee.nursingOrPregnant }}</p>
+        <p><strong>Dept Rope Color:</strong> {{ attendee.ropeColor }}</p>
+        <p><strong>Prayer Time:</strong> {{ attendee.prayerTime }}</p>
+
+        <!-- Assign Tag Button -->
+        <button mat-stroked-button color="accent" (click)="openAssignTagDialog()">
+          🎟️ Assign Tag
+        </button>
+      </div>
+
+      <div *ngIf="notFound" class="error">
+        <p>No attendee found with that code ❌</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

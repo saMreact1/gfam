@@ -1,0 +1,187 @@
+.dashboard-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+
+    .sidebar {
+        position: relative;
+        width: 180px;
+        background: #1e1e2f;
+        color: #fff;
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        transition: width .4s ease;
+
+        button {
+            position: absolute;
+            right: -1.2rem;
+            z-index: 1000;
+
+            mat-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f6f8fa;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+
+                @media (max-width: 480px) {
+                    width: 23px;
+                }
+            }
+        }
+
+        &.collapsed {
+            width: 70px;
+
+            @media (max-width: 480px) {
+                width: 60px;
+            }
+
+            .logo span, nav a span {
+                display: none;
+            }
+
+            nav a mat-icon {
+                margin-right: 0;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: cursive;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: .7rem;
+            border-bottom: 1px solid #eee;
+
+            @media (max-width: 480px) {
+                margin-bottom: 1rem;
+                padding-bottom: .5rem;
+            }
+        }
+
+        .logo mat-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .8rem;
+
+            a {
+                color: white;
+                display: flex;
+                align-items: center;
+                padding: .8rem;
+                border-radius: 8px;
+                text-decoration: none;
+                transition: background .3s ease;
+
+                @media (max-width: 480px) {
+                    padding: .5rem;
+                }
+
+                &:nth-of-type(11) {
+                    position: fixed;
+                    bottom: 0;
+                }
+
+                mat-icon {
+                    margin-right: 1rem;
+
+                    @media (max-width: 480px) {
+                        font-size: 1.5rem;
+                    }
+                }
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 2px solid #ddd;
+                }
+
+                &.active {
+                    background: #ddd;
+                    color: #1e1e2f;
+                    border: 2px solid #4343d4;
+                }
+            }
+        }
+    }
+
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        .topbar {
+            background: rgba(209, 179, 198, 0.498);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .05);
+            z-index: 0;
+
+            @media (max-width: 480px) {
+                padding: 1rem;
+            }
+
+            span {
+                font-size: 1.2rem;
+                font-family: cursive;
+                font-weight: 600;
+
+                @media (max-width: 480px) {
+                    font-size: 1rem;
+                }
+            }
+
+            .right {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+
+                .notify {
+                    cursor: pointer;
+
+                    &:hover {
+                        transform: scale(1.05);
+                    }
+                }
+                .avatar {
+                    height: 40px;
+                    width: 40px;
+                    border-radius: 50%;
+                    border: 2px solid #fff;
+                    cursor: pointer;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.2s ease;
+
+                    &:hover {
+                        transform: scale(1.05);
+                        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+                    }
+                }
+            }
+        }
+
+        .content {
+            padding: 1.5rem;
+            overflow: auto;
+        }
+    }
+}

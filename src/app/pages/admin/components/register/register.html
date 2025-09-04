@@ -1,0 +1,76 @@
+<div class="registration-wrapper">
+  <!-- Right Form -->
+  <div class="form-container">
+    <form class="registration-form" (ngSubmit)="onSubmit()" [formGroup]="registrationForm">
+      <h2>Attendee Registration</h2>
+
+      <div>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" required />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Phone</mat-label>
+        <input matInput type="tel" formControlName="phone" required />
+      </mat-form-field>
+
+      <div>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Gender</mat-label>
+          <mat-select formControlName="gender" required>
+            <mat-option value="Male">Male</mat-option>
+            <mat-option value="Female">Female</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Affiliation</mat-label>
+        <input matInput formControlName="affiliation" />
+      </mat-form-field>
+
+      <div>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>City</mat-label>
+          <input matInput formControlName="city" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>State</mat-label>
+          <input matInput formControlName="state" />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="fill" class="full-width" *ngIf="registrationForm.get('gender')?.value === 'Female'">
+        <mat-label>Nursing Mother / Pregnant</mat-label>
+        <mat-select formControlName="nursing">
+          <mat-option value="Nursing Mother">Nursing Mother</mat-option>
+          <mat-option value="Pregnant">Pregnant</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="registrationForm.invalid">
+        Register
+      </button>
+    </form>
+  </div>
+</div>

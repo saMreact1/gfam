@@ -1,0 +1,151 @@
+.registration-wrapper {
+  background: linear-gradient(135deg, #6a11cb, #fc3e25);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+
+  mat-icon {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+
+    @media (max-width: 480px) {
+        top: .5rem;
+        left: .5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: 100vh;
+  }
+}
+
+.illustration-side {
+  flex: 1;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .overlay {
+    text-align: center;
+    padding: 2rem;
+    max-width: 400px;
+
+    .headline {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .subtext {
+      color: #fefeffdc;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    img {
+      width: 100%;
+      max-width: 280px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+
+    @media (max-width: 768px) {
+      padding: 0;
+    }
+}
+
+.registration-card {
+  width: 80%;
+  max-width: 600px;
+  padding: 2rem;
+  border-radius: 12px;
+  background: #c7bbbba8;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+
+    @media (max-width: 480px) {
+      padding: 2rem 1.2rem;
+    }
+
+  mat-card-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    font-family: cursive;
+
+    @media (max-width: 480px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  mat-card-subtitle {
+    margin: 1.5rem 0;
+    color: #6a11cb;
+
+    @media (max-width: 480px) {
+      font-size: .9rem;
+    }
+  }
+
+  .full-width {
+    width: 100%;
+    background: transparent;
+
+    input {
+      background: transparent;
+    }
+
+    ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+      background-color: transparent;
+    }
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .section-label {
+    font-weight: 600;
+    margin-top: 1rem;
+    display: block;
+  }
+
+  .radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-container {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+}
