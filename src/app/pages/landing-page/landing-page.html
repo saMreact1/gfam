@@ -1,6 +1,7 @@
 <div class="landing-container">
+  <img class="gfam-logo" src="../../../assets/images/gfam-logo1.png" alt="">
   <!-- Hero Section -->
-  <div class="hero" [ngStyle]="{'background-image': 'url(' + images[0] + ')'}">
+  <div class="hero">
     <div class="overlay">
       <div class="hero-content">
         <h1>72 HOURS INTERCESSION 2025</h1>
@@ -32,11 +33,15 @@
 
   <!-- Carousel Section -->
   <div class="carousel">
-    <div 
-      class="carousel-track"
-    >
-      <img *ngFor="let img of images" [src]="img" alt="Program image">
-      <img *ngFor="let img of images" [src]="img" alt="Program image duplicate">
+    <div class="carousel-track">
+      <div class="carousel-item" *ngFor="let img of images">
+        <img [src]="img.src" [alt]="img.name">
+        <div class="carousel-label" *ngIf="img.name">{{ img.name }}</div>
+      </div>
+      <div class="carousel-item" *ngFor="let img of images">
+        <img [src]="img.src" [alt]="img.name">
+        <div class="carousel-label" *ngIf="img.name">{{ img.name }}</div>
+      </div>
     </div>
   </div>
 

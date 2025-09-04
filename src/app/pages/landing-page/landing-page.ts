@@ -12,19 +12,15 @@ export class LandingPage implements OnInit, OnDestroy {
   timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 }
 
   images = [
-    '../../../assets/images/gfam-hero.jpg',
-    '../../../assets/images/slide.jpg',
-    '../../../assets/images/slide0.jpg',
-    '../../../assets/images/slide1.jpg',
-    '../../../assets/images/slide2.jpg',
-    '../../../assets/images/slide3.jpg',
-    '../../../assets/images/slide4.jpg',
-    '../../../assets/images/slide5.jpg',
-    '../../../assets/images/slide6.jpg',
-    '../../../assets/images/slide7.jpg',
-    '../../../assets/images/slide8.jpg',
-    '../../../assets/images/slide9.jpg',
-    '../../../assets/images/slide10.jpg',
+    { src: '../../../assets/images/Apostle_Tolu_Agboola.png', name: 'Ap. Tolu Agboola' },
+    { src: '../../../assets/images/Baba_makin.png', name: 'Baba Makin' },
+    { src: '../../../assets/images/Daddy_MF_Adeyemi.png', name: 'Daddy M.F. Adeyemi' },
+    { src: '../../../assets/images/Prophet_Ayo_Jeje.png', name: 'Pro. Ayo Jeje' },
+    { src: '../../../assets/images/Prophet_Cherub_Obadare.png', name: 'Pro. Cherub Obadare' },
+    { src: '../../../assets/images/Prophet_Jesse_Jangfa.png', name: 'Pro. Jesse' },
+    { src: '../../../assets/images/Pst_Segun_Michael.png', name: 'Pst. Segun Michael' },
+    { src: '../../../assets/images/Pst_Sola_Ajewole.png', name: 'Pst. Sola Ajewole' },
+    { src: '../../../assets/images/REV_AUSTIN.png', name: 'Rev. Austin' },
   ];
   currentImageIndex = 0;
   carouselInterval: any;
