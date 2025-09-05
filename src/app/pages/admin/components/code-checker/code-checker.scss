@@ -27,12 +27,13 @@
     align-items: center;
     justify-content: space-between;
 
-    mat-form-field input {
-      margin: 0 auto;
+    mat-form-field {
+      width: 100%;
     }
 
     @media (max-width: 480px) {
-      display: block;
+      display: flex;
+      flex-direction: column;
       padding: 0;
     }
   }

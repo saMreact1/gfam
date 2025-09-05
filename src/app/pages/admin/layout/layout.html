@@ -14,20 +14,20 @@
                 mat-list-item
                 routerLink="/admin"
                 routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }"
+                [routerLinkActiveOptions]="{ exact: true }" (click)="onNavClick()"
             >
                 <mat-icon>dashboard</mat-icon>
                 <span>Dashboard</span>
             </a>
-            <a mat-list-item routerLink="/admin/attendees" routerLinkActive="active">
+            <a mat-list-item routerLink="/admin/attendees" routerLinkActive="active" (click)="onNavClick()">
                 <mat-icon>people</mat-icon>
                 <span>Attendees</span>
             </a>
-            <a mat-list-item routerLink="/admin/register" routerLinkActive="active">
+            <a mat-list-item routerLink="/admin/register" routerLinkActive="active" (click)="onNavClick()">
                 <mat-icon>assignment</mat-icon>
                 <span>Registrations</span>
             </a>
-            <a mat-list-item routerLink="/admin/checker" routerLinkActive="active">
+            <a mat-list-item routerLink="/admin/checker" routerLinkActive="active" (click)="onNavClick()">
                 <mat-icon>verified</mat-icon>
                 <span>Code Checker</span>
             </a>
