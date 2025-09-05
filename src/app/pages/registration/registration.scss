@@ -87,13 +87,15 @@
 
     @media (max-width: 480px) {
       padding: 2rem 1.2rem;
+      // margin-top: 2rem;
+      max-height: 80vh;
     }
 
   mat-card-title {
     text-align: center;
     font-size: 1.8rem;
     font-weight: 600;
-    font-family: cursive;
+    font-family: monospace;
 
     @media (max-width: 480px) {
       font-size: 1.5rem;
