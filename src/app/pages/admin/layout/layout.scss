@@ -13,10 +13,19 @@
         flex-direction: column;
         transition: width .4s ease;
 
+        @media (max-width: 480px) {
+            width: 110px;
+            padding: 1rem .5rem;
+        }
+
         button {
             position: absolute;
             right: -1.2rem;
             z-index: 1000;
+
+            @media (max-width: 480px) {
+                right: -1.4rem;
+            }
 
             mat-icon {
                 display: flex;
@@ -28,7 +37,7 @@
                 border-radius: 50%;
 
                 @media (max-width: 480px) {
-                    width: 23px;
+                    // width: 23px;
                 }
             }
         }
@@ -38,6 +47,10 @@
 
             @media (max-width: 480px) {
                 width: 35px;
+
+                .logo mat-icon {
+                    width: 24px;
+                }
             }
 
             .logo span, nav a span {
@@ -53,8 +66,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            font-family: cursive;
+            // gap: 0.5rem;
+            font-family: monospace;
             font-weight: bold;
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
@@ -74,7 +87,7 @@
             border-radius: 50%;
 
             @media (max-width: 480px) {
-                width: 24px;
+                width: 36px;
             }
         }
 
@@ -107,6 +120,7 @@
 
                     @media (max-width: 480px) {
                         font-size: 1.5rem;
+                        margin-right: .3rem;
                     }
                 }
 
@@ -146,7 +160,7 @@
 
             span {
                 font-size: 1.2rem;
-                font-family: cursive;
+                font-family: monospace;
                 font-weight: 600;
 
                 @media (max-width: 480px) {
@@ -186,6 +200,10 @@
         .content {
             padding: 1.5rem;
             overflow: auto;
+
+            @media (max-width: 480px) {
+                padding: 1rem;
+            }
         }
     }
 }
