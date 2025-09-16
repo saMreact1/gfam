@@ -1,4 +1,5 @@
 <div class="registration-wrapper">
+  <!-- Back Button -->
   <mat-icon routerLink="/">⬅️</mat-icon>
 
   <!-- Illustration Side -->
@@ -8,10 +9,7 @@
       <p class="subtext">
         Be part of a powerful gathering of believers, ministers, and leaders.
       </p>
-      <img
-        src="../../../assets/illustrations/signup.svg"
-        alt="Church Event Illustration"
-      />
+      <img src="../../../assets/illustrations/signup.svg" alt="Church Event Illustration" />
     </div>
   </div>
 
@@ -24,6 +22,7 @@
       </mat-card-subtitle>
 
       <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+        
         <!-- First & Last Name -->
         <div class="form-grid">
           <mat-form-field appearance="fill" class="full-width">
@@ -49,51 +48,76 @@
           <input matInput type="tel" formControlName="phone" required />
         </mat-form-field>
 
+        <!-- Role & Gender -->
         <div class="form-grid">
-            <!-- Role -->
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Role</mat-label>
-                <mat-select formControlName="role" required>
-                    <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
-                </mat-select>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="ministerRole" required>
+              <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-            <!-- Gender -->
-            <mat-form-field appearance="fill" class="full-width">
+          <mat-form-field appearance="fill" class="full-width">
             <mat-label>Gender</mat-label>
-                <mat-select formControlName="gender" required>
-                    <mat-option value="Male">Male</mat-option>
-                    <mat-option value="Female">Female</mat-option>
-                </mat-select>
-            </mat-form-field>
+            <mat-select formControlName="gender" required>
+              <mat-option value="Male">Male</mat-option>
+              <mat-option value="Female">Female</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
-        <!-- Affiliation -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Affiliation (Church/Organization)</mat-label>
-          <input matInput formControlName="affiliation" />
+        <!-- Attends C&S -->
+        <div class="attendsCs">
+          <label class="section-label">Do you attend C&S?</label>
+          <mat-radio-group formControlName="attendsCs" class="radio-group">
+            <mat-radio-button value="Yes">Yes</mat-radio-button>
+            <mat-radio-button value="No">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <!-- Church Name (conditional) -->
+        <mat-form-field
+          *ngIf="registrationForm.get('attendsCs')?.value === 'Yes'"
+          appearance="fill"
+          class="full-width"
+        >
+          <mat-label>Church Name</mat-label>
+          <input matInput formControlName="churchName" />
         </mat-form-field>
 
         <!-- City & State -->
         <div class="form-grid">
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>City</mat-label>
-            <input matInput formControlName="city" />
+            <mat-label>State</mat-label>
+            <mat-select formControlName="stateId">
+              <mat-option *ngFor="let state of states" [value]="state.id">
+                {{ state.name }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>State</mat-label>
-            <input matInput formControlName="state" />
+            <mat-label>City</mat-label>
+            <input matInput formControlName="city" />
           </mat-form-field>
         </div>
 
-        <!-- Nursing / Pregnant -->
+        <!-- Check-in Date -->
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Check-in Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="checkInPicker"
+            formControlName="checkInDate"
+          />
+          <mat-datepicker-toggle matSuffix [for]="checkInPicker"></mat-datepicker-toggle>
+          <mat-datepicker #checkInPicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Nursing or Pregnant (only if female) -->
         <div class="nursing" *ngIf="registrationForm.get('gender')?.value === 'Female'">
           <label class="section-label">Nursing mother or pregnant?</label>
-          <mat-radio-group
-            formControlName="nursing"
-            class="radio-group"
-          >
+          <mat-radio-group formControlName="nursing" class="radio-group">
             <mat-radio-button value="Yes">Yes</mat-radio-button>
             <mat-radio-button value="No">No</mat-radio-button>
           </mat-radio-group>
@@ -110,6 +134,7 @@
             Submit Registration
           </button>
         </div>
+
       </form>
     </mat-card>
   </div>
