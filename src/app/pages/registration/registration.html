@@ -51,7 +51,7 @@
         <!-- Role & Gender -->
         <div class="form-grid">
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Role</mat-label>
+            <mat-label> Ministerial Status</mat-label>
             <mat-select formControlName="ministerRole" required>
               <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
             </mat-select>
@@ -103,7 +103,7 @@
         </div>
 
         <!-- Check-in Date -->
-        <mat-form-field appearance="fill" class="full-width">
+        <!-- <mat-form-field appearance="fill" class="full-width">
           <mat-label>Check-in Date</mat-label>
           <input
             matInput
@@ -112,7 +112,7 @@
           />
           <mat-datepicker-toggle matSuffix [for]="checkInPicker"></mat-datepicker-toggle>
           <mat-datepicker #checkInPicker></mat-datepicker>
-        </mat-form-field>
+        </mat-form-field> -->
 
         <!-- Nursing or Pregnant (only if female) -->
         <div class="nursing" *ngIf="registrationForm.get('gender')?.value === 'Female'">

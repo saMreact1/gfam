@@ -41,7 +41,7 @@ export interface SuccessDialogData {
             <strong>Prayer Color:</strong> {{ data.data.prayerColor }}
           </div>
           <div class="detail-item">
-            <strong>Coordinator:</strong> {{ data.data.coordinatorName }}
+            <strong>Mobilization Coordinator:</strong> {{ data.data.coordinatorName }}
           </div>
           <div class="detail-item">
             <strong>Coordinator Phone:</strong> {{ data.data.coordinatorPhone }}
