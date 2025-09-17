@@ -4,6 +4,8 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 
+import { Router } from '@angular/router';
+
 export interface SuccessDialogData {
   responseCode: string;
   message?: string;
@@ -48,7 +50,8 @@ export interface SuccessDialogData {
       </mat-dialog-content>
 
       <mat-dialog-actions align="center">
-        <button mat-raised-button [color]="getButtonColor()" [ngClass]="getButtonClass()" mat-dialog-close>
+        <button mat-raised-button [color]="getButtonColor()" 
+      (click)="onCloseAndNavigate()" [ngClass]="getButtonClass()" mat-dialog-close>
           {{ getButtonText() }}
         </button>
       </mat-dialog-actions>
@@ -164,7 +167,8 @@ export interface SuccessDialogData {
 export class SuccessDialog {
   constructor(
     public dialogRef: MatDialogRef<SuccessDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: SuccessDialogData
+    @Inject(MAT_DIALOG_DATA) public data: SuccessDialogData,
+    private router: Router
   ) {}
 
   getIcon(): string {
@@ -279,5 +283,10 @@ export class SuccessDialog {
       default:
         return '';
     }
+  }
+
+  onCloseAndNavigate(): void {
+    this.dialogRef.close();
+    this.router.navigate(['/']);
   }
 }
