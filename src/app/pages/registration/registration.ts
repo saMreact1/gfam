@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Register } from '../../core/services/register';
+import { SuccessDialog } from './components/success-dialog';
 
 export interface RegistrationResponse {
   success: boolean;
@@ -38,6 +40,7 @@ export class Registration implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snack: MatSnackBar,
+    private dialog: MatDialog,
     private reg: Register
   ) {
     this.registrationForm = this.fb.group({
@@ -99,12 +102,30 @@ export class Registration implements OnInit {
 
     this.reg.register(payload).subscribe({
       next: (res) => {
-        this.snack.open(`${res.responseCode}`, 'Close', { duration: 3000 });
+        // Open success dialog with proper message and icon
+        this.dialog.open(SuccessDialog, {
+          width: '500px',
+          disableClose: true,
+          data: {
+            responseCode: res.responseCode,
+            message: res.message,
+            data: res.data
+          }
+        });
 
         this.registrationForm.reset();
       },
       error: (err) => {
-        this.snack.open('Registration failed. Please try again.', 'Close', { duration: 3000 });
+        // Use generic error message without exposing server details
+        this.dialog.open(SuccessDialog, {
+          width: '500px',
+          disableClose: true,
+          data: {
+            responseCode: 'REGISTRATION_FAILED',
+            message: 'Registration failed. Please check your information and try again.',
+            data: null
+          }
+        });
       }
     });
   }
