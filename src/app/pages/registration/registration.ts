@@ -54,8 +54,6 @@ export class Registration implements OnInit {
       churchName: ['', Validators.required],
       city: ['', Validators.required],
       stateId: ['', Validators.required],
-      // lgaId: [null],
-      // checkInDate: [new Date().toISOString().split('T')[0]],
       checkInDate: [new Date(), Validators.required],
       pregnantOrNursingTrue: [false],
       nursing: [''],
