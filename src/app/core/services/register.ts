@@ -6,7 +6,7 @@ import { RegistrationResponse } from '../../pages/registration/registration';
   providedIn: 'root'
 })
 export class Register {
-  private api = 'http://84.46.248.252:8080/api/v1';
+  private api = 'https://api.graceforallmenministry.org/api/v1';
 
   constructor(private http: HttpClient) { }
 
