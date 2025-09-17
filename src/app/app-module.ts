@@ -30,6 +30,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { Custom } from './shared/custom-snack';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
     Dashboard,
     Register,
     CodeChecker,
+    Custom
   ],
   imports: [
     BrowserModule,

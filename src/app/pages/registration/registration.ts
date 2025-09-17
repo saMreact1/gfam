@@ -48,12 +48,12 @@ export class Registration implements OnInit {
       phone: ['', Validators.required],
       ministerRole: ['', Validators.required],
       gender: ['', Validators.required],
-      churchName: [''],
-      city: [''],
-      stateId: [''],
+      churchName: ['', Validators.required],
+      city: ['', Validators.required],
+      stateId: ['', Validators.required],
       // lgaId: [null],
       // checkInDate: [new Date().toISOString().split('T')[0]],
-      checkInDate: [new Date()],
+      checkInDate: [new Date(), Validators.required],
       pregnantOrNursingTrue: [false],
       nursing: [''],
       attendsCs: [null, Validators.required]
@@ -68,11 +68,11 @@ export class Registration implements OnInit {
       }
     });
 
-    this.registrationForm.get('attendsCs')?.valueChanges.subscribe(attendsCs => {
-      if (attendsCs === 'No') {
-        this.registrationForm.get('churchName')?.reset('');
-      }
-    });
+    // this.registrationForm.get('attendsCs')?.valueChanges.subscribe(attendsCs => {
+    //   if (attendsCs === 'No') {
+    //     this.registrationForm.get('churchName')?.reset('');
+    //   }
+    // });
   }
 
   ngOnInit() {
@@ -100,7 +100,6 @@ export class Registration implements OnInit {
     this.reg.register(payload).subscribe({
       next: (res) => {
         this.snack.open(`${res.responseCode}`, 'Close', { duration: 3000 });
-
         this.registrationForm.reset();
       },
       error: (err) => {
