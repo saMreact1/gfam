@@ -44,7 +44,7 @@ export interface SuccessDialogData {
             <strong>Mobilization Coordinator:</strong> {{ data.data.coordinatorName }}
           </div>
           <div class="detail-item">
-            <strong>Coordinator Phone:</strong> {{ data.data.coordinatorPhone }}
+            <strong>Mobilization Coordinator Phone:</strong> {{ data.data.coordinatorPhone }}
           </div>
         </div>
       </mat-dialog-content>
