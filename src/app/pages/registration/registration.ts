@@ -68,12 +68,6 @@ export class Registration implements OnInit {
         });
       }
     });
-
-    this.registrationForm.get('attendsCs')?.valueChanges.subscribe(attendsCs => {
-      if (attendsCs === 'No') {
-        this.registrationForm.get('churchName')?.reset('');
-      }
-    });
   }
 
   ngOnInit() {
