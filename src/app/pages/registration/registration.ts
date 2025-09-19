@@ -57,7 +57,8 @@ export class Registration implements OnInit {
       checkInDate: [new Date(), Validators.required],
       pregnantOrNursingTrue: [false],
       nursing: [''],
-      attendsCs: [null, Validators.required]
+      attendsCs: ['', Validators.required],
+      attendance: ['', Validators.required]
     });
 
     this.registrationForm.get('gender')?.valueChanges.subscribe(gender => {
