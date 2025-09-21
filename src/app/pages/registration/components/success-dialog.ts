@@ -26,13 +26,16 @@ export interface SuccessDialogData {
         <p class="main-message">{{ getMainMessage() }}</p>
         <p class="sub-message" *ngIf="getSubMessage()">{{ getSubMessage() }}</p>
 
-        <!-- Show registration details for successful registration -->
+        <!-- Show registration details for successful physical registration -->
         <div *ngIf="data.responseCode === 'REGISTRATION_SUCCESSFUL' && data.data" class="registration-details">
           <div class="detail-item">
             <strong>Registration Code:</strong> {{ data.data.code }}
           </div>
           <div class="detail-item">
             <strong>Name:</strong> {{ data.data.firstName }} {{ data.data.lastName }}
+          </div>
+          <div class="detail-item">
+            <strong>Accommodation Type:</strong> {{ data.data.accommodationType }}
           </div>
           <div class="detail-item">
             <strong>Prayer Time:</strong> {{ data.data.prayerTime }}
@@ -47,10 +50,37 @@ export interface SuccessDialogData {
             <strong>Mobilization Coordinator Phone:</strong> {{ data.data.coordinatorPhone }}
           </div>
         </div>
+
+        <!-- Show registration details for already registered users -->
+        <div *ngIf="data.responseCode === 'ALREADY_REGISTERED' && data.data" class="registration-details">
+          <div class="detail-item">
+            <strong>Registration Code:</strong> {{ data.data.code }}
+          </div>
+          <div class="detail-item">
+            <strong>Name:</strong> {{ data.data.firstName }} {{ data.data.lastName }}
+          </div>
+          <div class="detail-item">
+            <strong>Accommodation Type:</strong> {{ data.data.accommodationType }}
+          </div>
+          <div class="detail-item">
+            <strong>Prayer Time:</strong> {{ data.data.prayerTime }}
+          </div>
+          <div class="detail-item">
+            <strong>Prayer Color:</strong> {{ data.data.prayerColor }}
+          </div>
+          <div class="detail-item">
+            <strong>Mobilization Coordinator:</strong> {{ data.data.coordinatorName }}
+          </div>
+          <div class="detail-item">
+            <strong>Mobilization Coordinator Phone:</strong> {{ data.data.coordinatorPhone }}
+          </div>
+        </div>
+
+
       </mat-dialog-content>
 
       <mat-dialog-actions align="center">
-        <button mat-raised-button [color]="getButtonColor()" 
+        <button mat-raised-button [color]="getButtonColor()"
       (click)="onCloseAndNavigate()" [ngClass]="getButtonClass()" mat-dialog-close>
           {{ getButtonText() }}
         </button>
@@ -175,6 +205,8 @@ export class SuccessDialog {
     switch (this.data.responseCode) {
       case 'REGISTRATION_SUCCESSFUL':
         return 'check_circle';
+      case 'REGISTRATION_VIRTUAL':
+        return 'videocam';
       case 'ALREADY_REGISTERED':
         return 'info';
       case 'ERROR':
@@ -188,6 +220,8 @@ export class SuccessDialog {
   getIconClass(): string {
     switch (this.data.responseCode) {
       case 'REGISTRATION_SUCCESSFUL':
+        return 'success-icon';
+      case 'REGISTRATION_VIRTUAL':
         return 'success-icon';
       case 'ALREADY_REGISTERED':
         return 'warning-icon';
@@ -203,6 +237,8 @@ export class SuccessDialog {
     switch (this.data.responseCode) {
       case 'REGISTRATION_SUCCESSFUL':
         return 'Registration Successful!';
+      case 'REGISTRATION_VIRTUAL':
+        return 'Virtual Registration Successful!';
       case 'ALREADY_REGISTERED':
         return 'Already Registered';
       case 'ERROR':
@@ -217,6 +253,8 @@ export class SuccessDialog {
     switch (this.data.responseCode) {
       case 'REGISTRATION_SUCCESSFUL':
         return 'Thank you for registering! Your registration has been completed successfully.';
+      case 'REGISTRATION_VIRTUAL':
+        return 'Thank you for registering for virtual attendance! Your registration has been completed successfully.';
       case 'ALREADY_REGISTERED':
         return 'We already have your registration on file.';
       case 'ERROR':
@@ -231,6 +269,8 @@ export class SuccessDialog {
     switch (this.data.responseCode) {
       case 'REGISTRATION_SUCCESSFUL':
         return 'Please check your email for confirmation details and further instructions.';
+      case 'REGISTRATION_VIRTUAL':
+        return 'The virtual meeting link and streaming details have been sent to your email. Please check your inbox for access information.';
       case 'ALREADY_REGISTERED':
         return 'We have resent a copy of your registration details to your email.';
       case 'ERROR':

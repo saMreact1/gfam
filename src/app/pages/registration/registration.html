@@ -7,9 +7,8 @@
     <div class="overlay">
       <h1 class="headline">Register for 72 Hours 2025</h1>
       <p class="subtext">
-        Be part of a powerful gathering of believers, ministers, and leaders. Only those who will be attending physically are expected to register.
+        Be part of a powerful gathering of believers, ministers, and leaders.
       </p>
-      <img src="../../../assets/illustrations/signup.svg" alt="Church Event Illustration" />
     </div>
   </div>
 
@@ -22,7 +21,7 @@
       </mat-card-subtitle>
 
       <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-        
+
         <!-- First & Last Name -->
         <div class="form-grid">
           <mat-form-field appearance="fill" class="full-width">
@@ -45,7 +44,13 @@
         <!-- Phone -->
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Phone</mat-label>
-          <input matInput type="tel" formControlName="phone" required />
+          <input matInput type="tel" formControlName="phone" required maxlength="11" />
+          <mat-error *ngIf="registrationForm.get('phone')?.hasError('required')">
+            Phone number is required
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('phone')?.hasError('pattern')">
+            Phone number must start with 0 and be exactly 11 digits
+          </mat-error>
         </mat-form-field>
 
         <!-- Role & Gender -->
@@ -124,10 +129,22 @@
         </div>
 
         <div class="attendance">
-          <label class="section-label">Will you be attending the program physically?</label>
-          <mat-radio-group formControlName="attendance" class="radio-group">
+          <label class="section-label">Will you be attending the program physically? <span class="required">*</span></label>
+          <mat-radio-group formControlName="attendance" class="radio-group" required>
             <mat-radio-button value="Yes">Yes</mat-radio-button>
             <mat-radio-button value="No">No</mat-radio-button>
+          </mat-radio-group>
+          <div class="error-message" *ngIf="registrationForm.get('attendance')?.invalid && registrationForm.get('attendance')?.touched">
+            Please select whether you will be attending physically.
+          </div>
+        </div>
+
+        <!-- Hostel Captain Volunteer (only if attending physically) -->
+        <div class="hostel-captain" *ngIf="registrationForm.get('attendance')?.value === 'Yes'">
+          <label class="section-label">Would you like to volunteer as hostel captain?</label>
+          <mat-radio-group formControlName="volunteerHostelCaptain" class="radio-group">
+            <mat-radio-button [value]="true">Yes</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
           </mat-radio-group>
         </div>
 

@@ -1,5 +1,8 @@
 .registration-wrapper {
-  background: linear-gradient(135deg, #6a11cb, #fc3e25);
+  background: url('../../../assets/images/72-New-Main-land.jpg');
+  background-size: cover;
+  background-position: center 65%;
+  background-repeat: no-repeat;
   display: flex;
   height: 100vh;
   overflow: hidden;
@@ -78,7 +81,7 @@
   max-width: 600px;
   padding: 2rem;
   border-radius: 12px;
-  background: #c7bbbba8;
+  background: #ffffff;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   max-height: 90vh;
@@ -96,6 +99,7 @@
     font-size: 1.8rem;
     font-weight: 600;
     font-family: monospace;
+    color: #333333;
 
     @media (max-width: 480px) {
       font-size: 1.5rem;
@@ -105,6 +109,7 @@
   mat-card-subtitle {
     margin: 1.5rem 0;
     color: #6a11cb;
+    text-align: center;
 
     @media (max-width: 480px) {
       font-size: .9rem;
@@ -138,6 +143,7 @@
     font-weight: 600;
     margin-top: 1rem;
     display: block;
+    color: #333333;
   }
 
   .radio-group {
@@ -149,5 +155,17 @@
   .btn-container {
     text-align: center;
     margin-top: 1.5rem;
+  }
+
+  .required {
+    color: #f44336;
+    font-weight: bold;
+  }
+
+  .error-message {
+    color: #f44336;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
   }
 }

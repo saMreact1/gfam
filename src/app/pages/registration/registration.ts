@@ -22,6 +22,7 @@ export interface RegistrationResponse {
     coordinatorName: string;
     coordinatorPhone: string;
     checkInDate: string;
+    accommodationType: string;
   }
 }
 
@@ -48,7 +49,7 @@ export class Registration implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/^0\d{10}$/)]],
       ministerRole: ['', Validators.required],
       gender: ['', Validators.required],
       churchName: ['', Validators.required],
@@ -58,7 +59,8 @@ export class Registration implements OnInit {
       pregnantOrNursingTrue: [false],
       nursing: [''],
       attendsCs: ['', Validators.required],
-      attendance: ['', Validators.required]
+      attendance: ['', Validators.required],
+      volunteerHostelCaptain: [false]
     });
 
     this.registrationForm.get('gender')?.valueChanges.subscribe(gender => {
@@ -66,6 +68,15 @@ export class Registration implements OnInit {
         this.registrationForm.patchValue({
           nursing: '',
           pregnantOrNursingTrue: false
+        });
+      }
+    });
+
+    // Reset hostel captain volunteer when attendance changes to No
+    this.registrationForm.get('attendance')?.valueChanges.subscribe(attendance => {
+      if (attendance !== 'Yes') {
+        this.registrationForm.patchValue({
+          volunteerHostelCaptain: false
         });
       }
     });
@@ -90,6 +101,8 @@ export class Registration implements OnInit {
       attendsCs: raw.attendsCs === 'Yes',
       pregnantOrNursingTrue: raw.gender === 'Female' ? raw.nursing === 'Yes' : false,
       checkInDate: new Date().toISOString().split('T')[0],
+      attendPhysically: raw.attendance === 'Yes',
+      volunteerAsHouseCaptain: raw.attendance === 'Yes' ? raw.volunteerHostelCaptain : false,
       // lgaId: null,
     };
 
