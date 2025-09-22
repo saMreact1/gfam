@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Register } from '../../core/services/register';
 import { SuccessDialog } from './components/success-dialog';
 
@@ -42,6 +43,7 @@ export class Registration implements OnInit {
     private fb: FormBuilder,
     private snack: MatSnackBar,
     private dialog: MatDialog,
+    private router: Router,
     private reg: Register
   ) {
     this.registrationForm = this.fb.group({
@@ -106,32 +108,11 @@ export class Registration implements OnInit {
       // lgaId: null,
     };
 
-    this.reg.register(payload).subscribe({
-      next: (res) => {
-        // Open success dialog with proper message and icon
-        this.dialog.open(SuccessDialog, {
-          width: '500px',
-          disableClose: true,
-          data: {
-            responseCode: res.responseCode,
-            message: res.message,
-            data: res.data
-          }
-        });
-
-        this.registrationForm.reset();
-      },
-      error: (err) => {
-        // Use generic error message without exposing server details
-        this.dialog.open(SuccessDialog, {
-          width: '500px',
-          disableClose: true,
-          data: {
-            responseCode: 'REGISTRATION_FAILED',
-            message: 'Registration failed. Please check your information and try again.',
-            data: null
-          }
-        });
+    // Navigate to OTP verification page with registration data
+    this.router.navigate(['/otp-verification'], {
+      state: {
+        email: raw.email,
+        registrationData: payload
       }
     });
   }

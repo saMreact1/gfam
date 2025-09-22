@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingPage } from './pages/landing-page/landing-page';
 import { Registration } from './pages/registration/registration';
+import { OtpVerification } from './pages/otp-verification/otp-verification';
 import { Layout } from './pages/admin/layout/layout';
 import { Dashboard } from './pages/admin/components/dashboard/dashboard';
 import { Attendees } from './pages/admin/components/attendees/attendees';
@@ -11,7 +12,8 @@ import { CodeChecker } from './pages/admin/components/code-checker/code-checker'
 const routes: Routes = [
   { path: '', component: LandingPage },
   { path: 'register', component: Registration },
-  { path: 'admin', component: Layout, 
+  { path: 'otp-verification', component: OtpVerification },
+  { path: 'admin', component: Layout,
     children: [
       { path: '', component: Dashboard },
       { path: 'attendees', component: Attendees },
