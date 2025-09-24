@@ -35,7 +35,7 @@ export class Register {
   }
 
   resendOtp(email: string) {
-    return this.http.post<OtpResponse>(`${this.api}/resend-otp/${email}`, {});
+    return this.http.post<OtpResponse>(`${this.api}/registrations/resend-otp/${email}`, {});
   }
 
   getStates() {
