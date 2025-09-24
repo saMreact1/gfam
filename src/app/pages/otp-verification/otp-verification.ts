@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,13 +12,19 @@ import { SuccessDialog } from '../registration/components/success-dialog';
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss'
 })
-export class OtpVerification implements OnInit {
+export class OtpVerification implements OnInit, OnDestroy {
   otpForm: FormGroup;
   email: string = '';
   registrationData: any = null;
   isLoading = false;
   isVerifying = false;
   expiresInMinutes = 0;
+
+  // Countdown timer properties
+  countdownSeconds = 120; // 2 minutes
+  countdownDisplay = '2:00';
+  canResend = false;
+  private countdownInterval: any;
 
   constructor(
     private fb: FormBuilder,
@@ -50,6 +56,13 @@ export class OtpVerification implements OnInit {
     this.sendOtp();
   }
 
+  ngOnDestroy() {
+    // Clear countdown interval when component is destroyed
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+  }
+
   sendOtp() {
     this.isLoading = true;
     this.reg.sendOtp(this.registrationData).subscribe({
@@ -57,6 +70,9 @@ export class OtpVerification implements OnInit {
         this.isLoading = false;
         this.expiresInMinutes = response.expiresInMinutes;
         this.snack.open(`OTP sent to ${this.email}`, 'Close', { duration: 3000 });
+
+        // Start countdown timer
+        this.startCountdown();
       },
       error: (err) => {
         this.isLoading = false;
@@ -117,6 +133,55 @@ export class OtpVerification implements OnInit {
         });
       }
     });
+  }
+
+  startCountdown() {
+    // Reset countdown
+    this.countdownSeconds = 120; // 2 minutes
+    this.canResend = false;
+    this.updateCountdownDisplay();
+
+    // Clear any existing interval
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+
+    // Start new countdown
+    this.countdownInterval = setInterval(() => {
+      this.countdownSeconds--;
+      this.updateCountdownDisplay();
+
+      if (this.countdownSeconds <= 0) {
+        this.canResend = true;
+        clearInterval(this.countdownInterval);
+      }
+    }, 1000);
+  }
+
+  updateCountdownDisplay() {
+    const minutes = Math.floor(this.countdownSeconds / 60);
+    const seconds = this.countdownSeconds % 60;
+    this.countdownDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  resendOtp() {
+    if (this.canResend && !this.isLoading) {
+      this.isLoading = true;
+      this.reg.resendOtp(this.email).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.expiresInMinutes = response.expiresInMinutes;
+          this.snack.open(`OTP resent to ${this.email}`, 'Close', { duration: 3000 });
+
+          // Start countdown timer
+          this.startCountdown();
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.snack.open('Failed to resend OTP. Please try again.', 'Close', { duration: 3000 });
+        }
+      });
+    }
   }
 
   goBack() {

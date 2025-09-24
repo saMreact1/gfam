@@ -21,15 +21,15 @@
       </mat-card-subtitle>
 
       <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
-        
+
         <!-- OTP Input -->
         <mat-form-field appearance="fill" class="full-width otp-field">
           <mat-label>Verification Code</mat-label>
-          <input 
-            matInput 
-            type="text" 
-            formControlName="otpCode" 
-            required 
+          <input
+            matInput
+            type="text"
+            formControlName="otpCode"
+            required
             maxlength="6"
             placeholder="Enter 6-digit code"
             class="otp-input"
@@ -45,6 +45,11 @@
         <!-- Expiry Info -->
         <div class="expiry-info" *ngIf="expiresInMinutes > 0">
           <p>Code expires in {{ expiresInMinutes }} minutes</p>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="countdown-info" *ngIf="!canResend">
+          <p>Resend code in {{ countdownDisplay }}</p>
         </div>
 
         <!-- Action Buttons -->
@@ -63,12 +68,15 @@
           <button
             mat-stroked-button
             type="button"
-            (click)="sendOtp()"
-            [disabled]="isLoading"
+            (click)="resendOtp()"
+            [disabled]="isLoading || !canResend"
             class="resend-btn"
+            [class.disabled]="!canResend"
           >
             <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
-            {{ isLoading ? 'Sending...' : 'Resend Code' }}
+            <span *ngIf="!canResend && !isLoading">Resend in {{ countdownDisplay }}</span>
+            <span *ngIf="canResend && !isLoading">Resend Code</span>
+            <span *ngIf="isLoading">Sending...</span>
           </button>
         </div>
 

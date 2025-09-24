@@ -123,7 +123,7 @@
 
   .otp-field {
     margin: 2rem 0;
-    
+
     .otp-input {
       text-align: center;
       font-size: 1.5rem;
@@ -134,10 +134,21 @@
 
   .expiry-info {
     margin: 1rem 0;
-    
+
     p {
       color: #666;
       font-size: 0.9rem;
+      margin: 0;
+    }
+  }
+
+  .countdown-info {
+    margin: 1rem 0;
+
+    p {
+      color: #ff6b35;
+      font-size: 0.9rem;
+      font-weight: 600;
       margin: 0;
     }
   }
@@ -157,6 +168,11 @@
     .resend-btn {
       font-size: 0.9rem;
       padding: 0.5rem 1.5rem;
+
+      &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
     }
 
     button {

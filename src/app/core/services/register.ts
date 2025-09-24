@@ -34,6 +34,10 @@ export class Register {
     return this.http.post<VerifyOtpResponse>(`${this.api}/registrations/verify-otp`, { email, otpCode });
   }
 
+  resendOtp(email: string) {
+    return this.http.post<OtpResponse>(`${this.api}/resend-otp/${email}`, {});
+  }
+
   getStates() {
     return this.http.get(`${this.api}/states`);
   }
