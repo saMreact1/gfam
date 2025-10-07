@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -10,6 +11,8 @@ export class Layout {
   collapsed: boolean = false;
   isMobile: boolean = false;
   isAdmin: boolean = false;
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.checkScreenSize();
@@ -34,5 +37,10 @@ export class Layout {
     if(this.isMobile) {
       this.collapsed = true;
     }
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/admin/login']);
   }
 }
