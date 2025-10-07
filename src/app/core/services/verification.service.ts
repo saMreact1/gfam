@@ -31,7 +31,7 @@ export interface ApiResponse<T> {
   providedIn: 'root'
 })
 export class VerificationService {
-  private api = 'https://api.graceforallmenministry.org/api/v1';
+  private api = 'https://api.graceforallmenministry.org/api/v1/registrations';
 
   constructor(private http: HttpClient) { }
 
