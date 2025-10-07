@@ -32,6 +32,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AdminLogin } from './pages/admin/auth/login/login';
+import { ForgotPassword } from './pages/admin/auth/forgot-password/forgot-password';
+import { InviteUser } from './pages/admin/components/invite-user/invite-user';
 
 @NgModule({
   declarations: [
@@ -44,6 +47,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     Dashboard,
     Register,
     CodeChecker,
+    AdminLogin,
+    ForgotPassword,
+    InviteUser,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,136 @@
+<div class="invite-user-container">
+  <mat-card class="invite-card">
+    <mat-card-header>
+      <div class="header-content">
+        <div class="icon-title">
+          <mat-icon class="header-icon">person_add</mat-icon>
+          <div>
+            <mat-card-title>Invite New User</mat-card-title>
+            <mat-card-subtitle>Add a new administrator to the system</mat-card-subtitle>
+          </div>
+        </div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="inviteForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <!-- First Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>First Name</mat-label>
+            <input
+              matInput
+              formControlName="firstName"
+              placeholder="Enter first name"
+              maxlength="80"
+              required
+            />
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-hint align="end">{{ inviteForm.get('firstName')?.value?.length || 0 }}/80</mat-hint>
+            <mat-error *ngIf="inviteForm.get('firstName')?.hasError('required')">
+              First name is required
+            </mat-error>
+            <mat-error *ngIf="inviteForm.get('firstName')?.hasError('maxlength')">
+              First name cannot exceed 80 characters
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Last Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Last Name</mat-label>
+            <input
+              matInput
+              formControlName="lastName"
+              placeholder="Enter last name"
+              maxlength="80"
+              required
+            />
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-hint align="end">{{ inviteForm.get('lastName')?.value?.length || 0 }}/80</mat-hint>
+            <mat-error *ngIf="inviteForm.get('lastName')?.hasError('required')">
+              Last name is required
+            </mat-error>
+            <mat-error *ngIf="inviteForm.get('lastName')?.hasError('maxlength')">
+              Last name cannot exceed 80 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            placeholder="user@example.com"
+            maxlength="191"
+            required
+          />
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-hint align="end">{{ inviteForm.get('email')?.value?.length || 0 }}/191</mat-hint>
+          <mat-error *ngIf="inviteForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="inviteForm.get('email')?.hasError('email')">
+            Please enter a valid email address
+          </mat-error>
+          <mat-error *ngIf="inviteForm.get('email')?.hasError('maxlength')">
+            Email cannot exceed 191 characters
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Role Selection -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option *ngFor="let role of roles" [value]="role">
+              {{ role }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>admin_panel_settings</mat-icon>
+          <mat-hint>Select the user's role in the system</mat-hint>
+          <mat-error *ngIf="inviteForm.get('role')?.hasError('required')">
+            Role is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Info Box -->
+        <div class="info-box">
+          <mat-icon>info</mat-icon>
+          <div class="info-content">
+            <p><strong>Note:</strong> An invitation email will be sent to the user with a temporary password and instructions to access the portal.</p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="isLoading"
+            class="submit-btn"
+          >
+            <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            <mat-icon *ngIf="!isLoading">send</mat-icon>
+            <span *ngIf="!isLoading">Send Invitation</span>
+            <span *ngIf="isLoading">Sending...</span>
+          </button>
+
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="resetForm()"
+            [disabled]="isLoading"
+            class="reset-btn"
+          >
+            <mat-icon>refresh</mat-icon>
+            Reset Form
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+

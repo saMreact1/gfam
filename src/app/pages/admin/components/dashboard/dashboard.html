@@ -1,53 +1,100 @@
 <div class="content">
-  <div class="cards-grid">
-    <mat-card class="stat-card">
-      <mat-card-title>Total Registered</mat-card-title>
-      <mat-card-content>
-        <h2>120</h2>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card class="stat-card">
-      <mat-card-title>Attended</mat-card-title>
-      <mat-card-content>
-        <h2>85</h2>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card class="stat-card">
-      <mat-card-title>Pending</mat-card-title>
-      <mat-card-content>
-        <h2>35</h2>
-      </mat-card-content>
-    </mat-card>
+  <!-- Header with Refresh Button -->
+  <div class="dashboard-header">
+    <h1>Dashboard Overview</h1>
+    <button mat-raised-button color="primary" (click)="refreshDashboard()" [disabled]="isLoading">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
   </div>
 
-  <div class="charts-grid">
-      <mat-card>
-          <mat-card-title>Registrations Over Time</mat-card-title>
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <!-- Stats Cards -->
+    <div class="cards-grid">
+      <mat-card class="stat-card total">
+        <div class="stat-icon">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="stat-content">
+          <mat-card-title>Total Registered</mat-card-title>
           <mat-card-content>
-              <div class="chart-container">
-              <canvas baseChart 
-                      [data]="lineChartData" 
-                      [options]="lineChartOptions" 
-                      [type]="'line'">
-              </canvas>
-              </div>
+            <h2>{{ totalRegistered | number }}</h2>
+            <p class="stat-label">Attendees</p>
           </mat-card-content>
+        </div>
       </mat-card>
 
-      <mat-card>
-          <mat-card-title>Attendees by Role</mat-card-title>
+      <mat-card class="stat-card attended">
+        <div class="stat-icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-content">
+          <mat-card-title>Attended</mat-card-title>
           <mat-card-content>
-              <div class="chart-container">
-                  <canvas 
-                      baseChart 
-                      [data]="pieChartData" 
-                      [options]="pieChartOptions" 
-                      [type]="'pie'">
-                  </canvas>
-              </div>
+            <h2>{{ attended | number }}</h2>
+            <p class="stat-label">Checked In</p>
           </mat-card-content>
+        </div>
       </mat-card>
+
+      <mat-card class="stat-card pending">
+        <div class="stat-icon">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="stat-content">
+          <mat-card-title>Pending</mat-card-title>
+          <mat-card-content>
+            <h2>{{ pending | number }}</h2>
+            <p class="stat-label">Not Checked In</p>
+          </mat-card-content>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>trending_up</mat-icon>
+            Registrations Over Time
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas baseChart
+                    [data]="lineChartData"
+                    [options]="lineChartOptions"
+                    [type]="'line'">
+            </canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>pie_chart</mat-icon>
+            Attendees by Role
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas
+                baseChart
+                [data]="pieChartData"
+                [options]="pieChartOptions"
+                [type]="'pie'">
+            </canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>

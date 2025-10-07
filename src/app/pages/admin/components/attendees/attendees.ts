@@ -2,26 +2,27 @@ import { Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  AttendeeService,
+  AttendeeResponse,
+  MinisterRole,
+  Gender,
+  RegistrationStatus
+} from '../../../../core/services/attendee.service';
 
 export interface Attendee {
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  role: string;
-  gender: string;
-  affiliation: string;
-  city: string;
-  state: string;
-  ropeColor: string;
-  prayer?: string;
-  tagAssigned?: boolean;
+  prayerSlot: string;
+  role: MinisterRole;
+  gender: Gender;
+  registrationStatus: RegistrationStatus;
+  code: string;
 }
-
-const ATTENDEE_DATA: Attendee[] = [
-  { firstName: 'John', lastName: 'Doe', email: 'john@example.com', phone: '08012345678', role: 'Pastor', gender: 'Male', affiliation: 'Faith Chapel', city: 'Lagos', state: 'Lagos', ropeColor: 'Blue', prayer: '12pm - 2pm', tagAssigned: true },
-  { firstName: 'Mary', lastName: 'Smith', email: 'mary@example.com', phone: '08098765432', role: 'Minister', gender: 'Female', affiliation: 'Grace Tabernacle', city: 'Abuja', state: 'FCT', ropeColor: 'Red', tagAssigned: false },
-];
 
 @Component({
   selector: 'app-attendees',
@@ -31,16 +32,48 @@ const ATTENDEE_DATA: Attendee[] = [
 })
 export class Attendees {
   displayedColumns: string[] = [
-    'firstName', 'lastName', 'email', 'phone','prayer', 'role', 'gender', 'tagAssigned'
+    'firstName', 'lastName', 'email', 'phone', 'prayerSlot', 'role', 'gender', 'registrationStatus', 'code'
   ];
-  dataSource = new MatTableDataSource<Attendee>(ATTENDEE_DATA);
-
-  tagFilter: string = 'all';
+  dataSource = new MatTableDataSource<Attendee>([]);
+  allAttendees: Attendee[] = [];
+  statusFilter: string = 'all';
+  isLoading = false;
+  eventId = 1;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  ngOnInit() {}
+  constructor(
+    private attendeeService: AttendeeService,
+    private snack: MatSnackBar
+  ) {}
+
+  ngOnInit() {
+    this.loadAttendees();
+  }
+
+  loadAttendees() {
+    this.isLoading = true;
+    this.attendeeService.getAllAttendees().subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.responseCode === '00' && response.data) {
+          // Map tagStatus to registrationStatus
+          this.allAttendees = response.data.map(attendee => ({
+            ...attendee,
+            registrationStatus: attendee.tagStatus
+          }));
+          this.dataSource.data = this.allAttendees;
+        } else {
+          this.snack.open(response.message || 'Failed to load attendees', 'Close', { duration: 3000 });
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.snack.open('Failed to load attendees. Please try again.', 'Close', { duration: 3000 });
+      }
+    });
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -52,39 +85,75 @@ export class Attendees {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  applyTagFilter() {
-    if (this.tagFilter === 'all') {
-      this.dataSource.data = ATTENDEE_DATA;
-    } else if (this.tagFilter === 'tagged') {
-      this.dataSource.data = ATTENDEE_DATA.filter(a => a.tagAssigned);
-    } else if (this.tagFilter === 'untagged') {
-      this.dataSource.data = ATTENDEE_DATA.filter(a => !a.tagAssigned);
+  applyStatusFilter() {
+    if (this.statusFilter === 'all') {
+      this.dataSource.data = this.allAttendees;
+    } else if (this.statusFilter === 'pending') {
+      this.dataSource.data = this.allAttendees.filter(a => a.registrationStatus === RegistrationStatus.PENDING);
+    } else if (this.statusFilter === 'approved') {
+      this.dataSource.data = this.allAttendees.filter(a => a.registrationStatus === RegistrationStatus.APPROVED);
+    } else if (this.statusFilter === 'checked_in') {
+      this.dataSource.data = this.allAttendees.filter(a => a.registrationStatus === RegistrationStatus.CHECKED_IN);
+    } else if (this.statusFilter === 'rejected') {
+      this.dataSource.data = this.allAttendees.filter(a => a.registrationStatus === RegistrationStatus.REJECTED);
     }
   }
 
   removeUser(user: Attendee) {
-    const index = ATTENDEE_DATA.findIndex(a => a.email === user.email);
+    const index = this.allAttendees.findIndex(a => a.id === user.id);
     if (index > -1) {
-      ATTENDEE_DATA.splice(index, 1);
-      this.applyTagFilter(); // refresh table
+      this.allAttendees.splice(index, 1);
+      this.applyStatusFilter(); // refresh table
+    }
+  }
+
+  getStatusClass(status: RegistrationStatus): string {
+    switch (status) {
+      case RegistrationStatus.PENDING:
+        return 'status-pending';
+      case RegistrationStatus.APPROVED:
+        return 'status-approved';
+      case RegistrationStatus.CHECKED_IN:
+        return 'status-checked-in';
+      case RegistrationStatus.REJECTED:
+        return 'status-rejected';
+      default:
+        return '';
+    }
+  }
+
+  getStatusLabel(status: RegistrationStatus): string {
+    switch (status) {
+      case RegistrationStatus.PENDING:
+        return '⏳ Pending';
+      case RegistrationStatus.APPROVED:
+        return '✅ Approved';
+      case RegistrationStatus.CHECKED_IN:
+        return '🎫 Checked In';
+      case RegistrationStatus.REJECTED:
+        return '❌ Rejected';
+      default:
+        return status;
     }
   }
 
   downloadCSV() {
-    const items = this.dataSource.filteredData.length ? this.dataSource.filteredData : this.dataSource.data;
-
-    const headers = this.displayedColumns.join(',');
-    const rows = items.map(item => 
-      this.displayedColumns.map(col => (item as any)[col]).join(',')
-    );
-
-    const csv = [headers, ...rows].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'attendees.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
+    this.isLoading = true;
+    this.attendeeService.exportAttendees().subscribe({
+      next: (blob) => {
+        this.isLoading = false;
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `attendees-event-${this.eventId}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.snack.open('Attendees list downloaded successfully!', 'Close', { duration: 3000 });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.snack.open('Failed to download attendees list. Please try again.', 'Close', { duration: 3000 });
+      }
+    });
   }
 }

@@ -10,11 +10,13 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="filter-field">
-                <mat-label>Filter by Tag</mat-label>
-                <mat-select [(value)]="tagFilter" (selectionChange)="applyTagFilter()">
-                    <mat-option value="all">All Users</mat-option>
-                    <mat-option value="tagged">Tagged</mat-option>
-                    <mat-option value="untagged">Untagged</mat-option>
+                <mat-label>Filter by Status</mat-label>
+                <mat-select [(value)]="statusFilter" (selectionChange)="applyStatusFilter()">
+                    <mat-option value="all">All Attendees</mat-option>
+                    <mat-option value="pending">Pending</mat-option>
+                    <mat-option value="approved">Approved</mat-option>
+                    <mat-option value="checked_in">Checked In</mat-option>
+                    <mat-option value="rejected">Rejected</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
@@ -25,7 +27,13 @@
     </mat-card-header>
 
     <mat-card-content>
-        <div class="table-container">
+        <!-- Loading Spinner -->
+        <div *ngIf="isLoading" class="loading-container">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Loading attendees...</p>
+        </div>
+
+        <div class="table-container" *ngIf="!isLoading">
             <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
 
                 <!-- First Name -->
@@ -62,27 +70,29 @@
                 <ng-container matColumnDef="gender">
                     <th mat-header-cell *matHeaderCellDef> Gender </th>
                     <td mat-cell *matCellDef="let element">{{element.gender}}</td>
-                </ng-container> 
-
-                <!-- Prayer Slot -->
-                <ng-container matColumnDef="prayer">
-                    <th mat-header-cell *matHeaderCellDef> Prayer Slot </th>
-                    <td mat-cell *matCellDef="let element">{{element.prayer}}</td>
                 </ng-container>
 
-                <!-- Tag Status -->
-                <ng-container matColumnDef="tagAssigned">
-                    <th mat-header-cell *matHeaderCellDef> Tag Status </th>
+                <!-- Prayer Slot -->
+                <ng-container matColumnDef="prayerSlot">
+                    <th mat-header-cell *matHeaderCellDef> Prayer Slot </th>
+                    <td mat-cell *matCellDef="let element">{{element.prayerSlot || 'N/A'}}</td>
+                </ng-container>
+
+                <!-- Registration Status -->
+                <ng-container matColumnDef="registrationStatus">
+                    <th mat-header-cell *matHeaderCellDef> Status </th>
                     <td mat-cell *matCellDef="let element">
-                        <span *ngIf="element.tagAssigned; else untagged" class="tagged">✅ Tagged</span>
-                        <ng-template #untagged>
-                            <span class="tag">
-                                ❌ Untagged
-                                <button mat-icon-button color="warn" (click)="removeUser(element)">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </span>
-                        </ng-template>
+                        <span [class]="getStatusClass(element.registrationStatus)" class="status-badge">
+                            {{getStatusLabel(element.registrationStatus)}}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <!-- Code -->
+                <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef> Code </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="code-badge">{{element.code}}</span>
                     </td>
                 </ng-container>
 

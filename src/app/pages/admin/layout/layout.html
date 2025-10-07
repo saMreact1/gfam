@@ -28,8 +28,20 @@
                 <span>Registrations</span>
             </a>
             <a mat-list-item routerLink="/admin/checker" routerLinkActive="active" (click)="onNavClick()">
-                <mat-icon>verified</mat-icon>
-                <span>Code Checker</span>
+                <mat-icon>qr_code_scanner</mat-icon>
+                <span>Verify Attendee</span>
+            </a>
+            <a mat-list-item routerLink="/admin/users" routerLinkActive="active" (click)="onNavClick()" *ngIf="isAdmin">
+                <mat-icon>people</mat-icon>
+                <span>Users</span>
+            </a>
+            <a mat-list-item routerLink="/admin/invite-user" routerLinkActive="active" (click)="onNavClick()" *ngIf="isAdmin">
+                <mat-icon>person_add</mat-icon>
+                <span>Invite User</span>
+            </a>
+            <a mat-list-item routerLink="/admin/change-password" routerLinkActive="active" (click)="onNavClick()">
+                <mat-icon>lock_reset</mat-icon>
+                <span>Change Password</span>
             </a>
         </nav>
     </aside>
@@ -37,7 +49,7 @@
     <div class="main">
         <header class="topbar">
             <span class="title">Admin Dashboard</span>
-            
+
             <div class="right">
                 <mat-icon class="notify">notifications</mat-icon>
                 <mat-icon>account_circle</mat-icon>

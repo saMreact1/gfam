@@ -1,0 +1,201 @@
+.invite-user-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.invite-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  background: white;
+
+  mat-card-header {
+    padding: 2rem 2rem 1rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-radius: 16px 16px 0 0;
+
+    .header-content {
+      width: 100%;
+
+      .icon-title {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .header-icon {
+          font-size: 48px;
+          width: 48px;
+          height: 48px;
+          color: #667eea;
+        }
+      }
+    }
+
+    mat-card-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 0.25rem;
+    }
+
+    mat-card-subtitle {
+      font-size: 1rem;
+      color: #6c757d;
+    }
+  }
+
+  mat-card-content {
+    padding: 2rem;
+
+    @media (max-width: 480px) {
+      padding: 1.5rem;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .info-box {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: rgba(102, 126, 234, 0.08);
+    border-left: 4px solid #667eea;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+
+    mat-icon {
+      color: #667eea;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .info-content {
+      flex: 1;
+
+      p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #495057;
+        line-height: 1.5;
+
+        strong {
+          color: #1a1a2e;
+        }
+      }
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+    }
+
+    button {
+      flex: 1;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      mat-spinner {
+        margin-right: 0.5rem;
+      }
+    }
+
+    .submit-btn {
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+      }
+    }
+
+    .reset-btn {
+      border: 2px solid #e9ecef;
+
+      &:hover:not(:disabled) {
+        background: #f8f9fa;
+        border-color: #667eea;
+        color: #667eea;
+      }
+    }
+  }
+}
+
+// Password strength indicator (optional enhancement)
+.password-strength {
+  margin-top: 0.5rem;
+  
+  .strength-bar {
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+    
+    .strength-fill {
+      height: 100%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+      
+      &.weak {
+        width: 33%;
+        background: #dc3545;
+      }
+      
+      &.medium {
+        width: 66%;
+        background: #ffc107;
+      }
+      
+      &.strong {
+        width: 100%;
+        background: #28a745;
+      }
+    }
+  }
+  
+  .strength-text {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    
+    &.weak { color: #dc3545; }
+    &.medium { color: #ffc107; }
+    &.strong { color: #28a745; }
+  }
+}
+

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AssignTagDialog } from '../modals/assign-tag';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { VerificationService, VerifyResponse } from '../../../../core/services/verification.service';
 
 @Component({
   selector: 'app-code-checker',
@@ -11,70 +12,69 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class CodeChecker {
   enteredCode = '';
-  attendee: any = null;
+  attendee: VerifyResponse | null = null;
   notFound = false;
-
-  // Mock database (replace with API call later)
-  attendees = [
-    {
-      code: 'REG-2025-12345',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john@example.com',
-      phone: '08012345678',
-      role: 'Pastor',
-      gender: 'Male',
-      affiliation: 'Church of Zion',
-      city: 'Lagos',
-      state: 'Lagos',
-      nursingOrPregnant: 'No',
-      ropeColor: 'Blue',
-      prayerTime: '12am - 2pm'
-    },
-    {
-      code: 'REG-2025-54321',
-      firstName: 'Mary',
-      lastName: 'Smith',
-      email: 'mary@example.com',
-      phone: '08087654321',
-      role: 'Minister',
-      gender: 'Female',
-      affiliation: 'Living Faith',
-      city: 'Abuja',
-      state: 'FCT',
-      nursingOrPregnant: 'Pregnant',
-      ropeColor: 'Red',
-      prayerTime: '12am - 2pm'
-    }
-  ];
+  isLoading = false;
 
   constructor(
     private dialog: MatDialog,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private verificationService: VerificationService
   ) {}
 
   checkCode() {
-    const found = this.attendees.find(a => a.code === this.enteredCode.trim());
-    if (found) {
-      this.attendee = found;
-      this.notFound = false;
-    } else {
-      this.attendee = null;
-      this.notFound = true;
+    if (!this.enteredCode.trim()) {
+      this.snack.open('Please enter a code', 'Close', { duration: 3000 });
+      return;
     }
+
+    this.isLoading = true;
+    this.notFound = false;
+    this.attendee = null;
+
+    this.verificationService.verifyAttendee(this.enteredCode.trim()).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.responseCode === '00' && response.data) {
+          this.attendee = response.data;
+          this.notFound = false;
+          this.snack.open(response.message || 'Attendee verified successfully!', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          });
+        } else {
+          this.attendee = null;
+          this.notFound = true;
+          this.snack.open(response.message || 'Attendee not found', 'Close', { duration: 3000 });
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.attendee = null;
+        this.notFound = true;
+        this.snack.open('No attendee found with that code', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  clearSearch() {
+    this.enteredCode = '';
+    this.attendee = null;
+    this.notFound = false;
   }
 
    openAssignTagDialog() {
+    if (!this.attendee) return;
+
     const dialogRef = this.dialog.open(AssignTagDialog, {
       // width: '400px',
       data: { attendee: this.attendee },
     });
 
     dialogRef.afterClosed().subscribe((tagId) => {
-      if (tagId) {
+      if (tagId && this.attendee) {
         // 🔹 Call API to save tag assignment
         console.log(`Tag ${tagId} assigned to`, this.attendee);
-        this.attendee.tagId = tagId;
         this.snack.open('Tag Assigned Successfully', 'Close', {duration: 3000})
       }
     });

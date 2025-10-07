@@ -9,15 +9,21 @@ import { Component, HostListener } from '@angular/core';
 export class Layout {
   collapsed: boolean = false;
   isMobile: boolean = false;
+  isAdmin: boolean = false;
 
   ngOnInit() {
-    this.checkScreenSize(); 
+    this.checkScreenSize();
+    const user = localStorage.getItem('adminUser');
+    if (user) {
+      const userData = JSON.parse(user);
+      this.isAdmin = userData.role === 'ADMIN';
+    }
   }
 
   @HostListener('window:resize')
   checkScreenSize() {
     this.isMobile = window.innerWidth <= 768;
-    this.collapsed = this.isMobile ? true : false; 
+    this.collapsed = this.isMobile ? true : false;
   }
 
   toggleSidebar() {
