@@ -7,16 +7,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
   styleUrl: './landing-page.scss'
 })
 export class LandingPage implements OnInit, OnDestroy {
-  targetDate = new Date('2025-10-08T05:00:00').getTime();
-  countdown: any;
-  timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  // Program start date - Set to today at midnight
+  programStartDate: number;
+  dayCheckInterval: any;
+  currentDay = 1;
 
-  partners = [
-    { src: '../../../assets/images/gfam-logo1.png', name: 'Partner 1' },
-    { src: '../../../assets/images/gfam-hero.jpg', name: 'Partner 2' },
-    { src: '../../../assets/images/gfam-hero.jpg', name: 'Partner 3' },
-    { src: '../../../assets/images/gfam-logo1.png', name: 'Partner 4' },
-  ];
+  constructor() {
+    // Set program start to today at midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    this.programStartDate = today.getTime();
+  }
 
   images = [
     { src: '../../../assets/images/Apostle_Tolu_Agboola.png', name: 'Ap. Tolu Agboola' },
@@ -33,24 +34,37 @@ export class LandingPage implements OnInit, OnDestroy {
   carouselInterval: any;
 
   ngOnInit(): void {
-    this.updateCountdown();
-    this.countdown = setInterval(() => this.updateCountdown(), 1000);
+    this.updateCurrentDay();
+    // Check every minute to update the day
+    this.dayCheckInterval = setInterval(() => this.updateCurrentDay(), 60000);
     this.carouselInterval = setInterval(() => this.nextImage(), 2000);
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.countdown);
+    clearInterval(this.dayCheckInterval);
     clearInterval(this.carouselInterval);
   }
 
-  updateCountdown() {
+  updateCurrentDay() {
     const now = new Date().getTime();
-    const distance = this.targetDate - now;
+    const timeSinceStart = now - this.programStartDate;
 
-    this.timeLeft.days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    this.timeLeft.hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    this.timeLeft.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    this.timeLeft.seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // Calculate which day we're on (1-indexed)
+    // Each day is 24 hours = 86400000 milliseconds
+    const daysPassed = Math.floor(timeSinceStart / (1000 * 60 * 60 * 24));
+
+    // Day 1 starts at 0 days passed, Day 2 at 1 day passed, etc.
+    this.currentDay = daysPassed + 1;
+
+    // Cap at Day 3 (72 hours = 3 days)
+    if (this.currentDay > 3) {
+      this.currentDay = 3;
+    }
+
+    // If program hasn't started yet, show Day 1
+    if (this.currentDay < 1) {
+      this.currentDay = 1;
+    }
   }
 
   nextImage() {

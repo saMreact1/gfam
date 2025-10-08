@@ -19,7 +19,7 @@
     .hero {
         background-image: url('https://res.cloudinary.com/dcktnvdqt/image/upload/v1758059247/gfam-hero_fjpydt.jpg');
         position: relative;
-        height: 80vh;
+        height: 90vh;
         background-size: cover;
         background-position: center;
         display: flex;
@@ -63,30 +63,59 @@
                     }
                 }
 
-                .countdown {
+                .day-counter {
                     display: flex;
-                    gap: 1rem;
-                    justify-content: center;
-                    flex-wrap: wrap;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.5rem;
                     margin-bottom: 2rem;
 
-                    .time-box {
-                        backdrop-filter: blur(10px);
-                        background: rgba(255, 255, 255, 0.15);
-                        border-radius: 12px;
-                        padding: 1rem 1.5rem;
-                        min-width: 80px;
-                        text-align: center;
+                    h2 {
+                        font-size: clamp(1.2rem, 3vw, 1.8rem);
+                        font-weight: 600;
+                        color: #ffdd57;
+                        margin: 0;
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                    }
 
-                        strong {
-                            font-size: 1.8rem;
-                            display: block;
-                            font-weight: 600;
+                    .day-box {
+                        backdrop-filter: blur(10px);
+                        background: linear-gradient(135deg, rgba(255, 221, 87, 0.2) 0%, rgba(255, 255, 255, 0.15) 100%);
+                        border: 3px solid rgba(255, 221, 87, 0.5);
+                        border-radius: 20px;
+                        padding: 2rem 3rem;
+                        min-width: 200px;
+                        text-align: center;
+                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+                        &:hover {
+                            transform: translateY(-5px);
+                            box-shadow: 0 12px 40px rgba(255, 221, 87, 0.4);
                         }
 
-                        span {
-                            font-size: 0.85rem;
-                            opacity: 0.9;
+                        .day-label {
+                            font-size: 1.2rem;
+                            font-weight: 600;
+                            color: #ffdd57;
+                            letter-spacing: 3px;
+                            text-transform: uppercase;
+                        }
+
+                        .day-number {
+                            font-size: 5rem;
+                            font-weight: 900;
+                            color: #ffffff;
+                            line-height: 1;
+                            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+                            @media (max-width: 480px) {
+                                font-size: 4rem;
+                            }
                         }
                     }
                 }
@@ -230,8 +259,8 @@
                         height: 50px;
                         float: right;
                         clear: left;
-                        border-radius: 8px; 
-                    }     
+                        border-radius: 8px;
+                    }
                 }
 
                 .account-details {
@@ -259,7 +288,7 @@
                             transform: rotate(90deg);
                         }
                     }
-                    
+
                     .details {
                         p:nth-of-type(1) {
                             font-size: 1.2rem;
@@ -356,7 +385,7 @@
                         div {
                             width: 40px;
                             height: 40px;
-                        }     
+                        }
                     }
 
                     .account-details {
@@ -376,7 +405,7 @@
                                 width: 40px;
                             }
                         }
-                        
+
                         .details {
                             p:nth-of-type(1), p {
                                 font-size: 1rem;

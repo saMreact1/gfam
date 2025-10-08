@@ -7,19 +7,12 @@
         <h1>72 HOURS INTERCESSION 2025</h1>
         <h3>Theme: <span>“Behold, the TABERNACLE of God”</span></h3>
 
-        <!-- Countdown -->
-        <div class="countdown">
-          <div class="time-box">
-            <strong>{{ timeLeft.days }}</strong><span>Days</span>
-          </div>
-          <div class="time-box">
-            <strong>{{ timeLeft.hours }}</strong><span>Hours</span>
-          </div>
-          <div class="time-box">
-            <strong>{{ timeLeft.minutes }}</strong><span>Mins</span>
-          </div>
-          <div class="time-box">
-            <strong>{{ timeLeft.seconds }}</strong><span>Secs</span>
+        <!-- Day Counter -->
+        <div class="day-counter">
+          <h2>Program in Progress</h2>
+          <div class="day-box">
+            <span class="day-label">DAY</span>
+            <span class="day-number">{{ currentDay }}</span>
           </div>
         </div>
 

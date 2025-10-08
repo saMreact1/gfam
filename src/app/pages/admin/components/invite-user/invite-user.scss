@@ -27,6 +27,10 @@
           width: 48px;
           height: 48px;
           color: #667eea;
+
+          @media (max-width: 480px) {
+            font-size: 2rem;
+          }
         }
       }
     }
@@ -36,11 +40,19 @@
       font-weight: 700;
       color: #1a1a2e;
       margin-bottom: 0.25rem;
+
+      @media (max-width: 480px) {
+        font-size: 1.5rem;
+      }
     }
 
     mat-card-subtitle {
       font-size: 1rem;
       color: #6c757d;
+
+      @media (max-width: 480px) {
+        font-size: .8rem;
+      }
     }
   }
 
@@ -161,38 +173,38 @@
 // Password strength indicator (optional enhancement)
 .password-strength {
   margin-top: 0.5rem;
-  
+
   .strength-bar {
     height: 4px;
     background: #e9ecef;
     border-radius: 2px;
     overflow: hidden;
-    
+
     .strength-fill {
       height: 100%;
       transition: width 0.3s ease, background-color 0.3s ease;
-      
+
       &.weak {
         width: 33%;
         background: #dc3545;
       }
-      
+
       &.medium {
         width: 66%;
         background: #ffc107;
       }
-      
+
       &.strong {
         width: 100%;
         background: #28a745;
       }
     }
   }
-  
+
   .strength-text {
     font-size: 0.85rem;
     margin-top: 0.25rem;
-    
+
     &.weak { color: #dc3545; }
     &.medium { color: #ffc107; }
     &.strong { color: #28a745; }
