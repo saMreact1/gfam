@@ -1,10 +1,10 @@
 <div class="registration-wrapper">
-  <!-- Right Form -->
   <div class="form-container">
-    <form class="registration-form" (ngSubmit)="onSubmit()" [formGroup]="registrationForm">
+    <form class="registration-form" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
       <h2>Attendee Registration</h2>
 
-      <div>
+      <!-- First & Last Name -->
+      <div class="form-grid">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>First Name</mat-label>
           <input matInput formControlName="firstName" required />
@@ -16,21 +16,30 @@
         </mat-form-field>
       </div>
 
+      <!-- Email -->
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Email</mat-label>
         <input matInput type="email" formControlName="email" required />
       </mat-form-field>
 
+      <!-- Phone -->
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Phone</mat-label>
-        <input matInput type="tel" formControlName="phone" required />
+        <input matInput type="tel" formControlName="phone" required maxlength="11" />
+        <mat-error *ngIf="registrationForm.get('phone')?.hasError('required')">
+          Phone number is required
+        </mat-error>
+        <mat-error *ngIf="registrationForm.get('phone')?.hasError('pattern')">
+          Phone number must start with 0 and be exactly 11 digits
+        </mat-error>
       </mat-form-field>
 
-      <div>
+      <!-- Role & Gender -->
+      <div class="form-grid">
         <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Role</mat-label>
-          <mat-select formControlName="role" required>
-            <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+          <mat-label>Ministerial Status</mat-label>
+          <mat-select formControlName="ministerRole" required>
+            <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
           </mat-select>
         </mat-form-field>
 
@@ -43,34 +52,85 @@
         </mat-form-field>
       </div>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Affiliation</mat-label>
-        <input matInput formControlName="affiliation" />
+      <!-- Attends C&S -->
+      <div class="attendsCs">
+        <label class="section-label">Do you attend C&S?</label>
+        <mat-radio-group formControlName="attendsCs" class="radio-group">
+          <mat-radio-button value="Yes">Yes</mat-radio-button>
+          <mat-radio-button value="No">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Church Name (conditional) -->
+      <mat-form-field
+        *ngIf="registrationForm.get('attendsCs')?.value"
+        appearance="fill"
+        class="full-width"
+      >
+        <mat-label>Church Name</mat-label>
+        <input matInput formControlName="churchName" />
       </mat-form-field>
 
-      <div>
+      <!-- City & State -->
+      <div class="form-grid">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>State</mat-label>
+          <mat-select formControlName="stateId">
+            <mat-option *ngFor="let state of states" [value]="state.id">
+              {{ state.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>City</mat-label>
           <input matInput formControlName="city" />
         </mat-form-field>
-
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>State</mat-label>
-          <input matInput formControlName="state" />
-        </mat-form-field>
       </div>
 
-      <mat-form-field appearance="fill" class="full-width" *ngIf="registrationForm.get('gender')?.value === 'Female'">
-        <mat-label>Nursing Mother / Pregnant</mat-label>
-        <mat-select formControlName="nursing">
-          <mat-option value="Nursing Mother">Nursing Mother</mat-option>
-          <mat-option value="Pregnant">Pregnant</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <!-- Nursing or Pregnant (only if female) -->
+      <div class="nursing" *ngIf="registrationForm.get('gender')?.value === 'Female'">
+        <label class="section-label">Nursing mother or pregnant?</label>
+        <mat-radio-group formControlName="nursing" class="radio-group">
+          <mat-radio-button value="Yes">Yes</mat-radio-button>
+          <mat-radio-button value="No">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
 
-      <button mat-raised-button color="primary" type="submit" [disabled]="registrationForm.invalid">
-        Register
-      </button>
+      <div class="attendance">
+        <label class="section-label">Will you be attending the program physically? <span class="required">*</span></label>
+        <mat-radio-group formControlName="attendance" class="radio-group" required>
+          <mat-radio-button value="Yes">Yes</mat-radio-button>
+          <mat-radio-button value="No">No</mat-radio-button>
+        </mat-radio-group>
+        <div class="error-message" *ngIf="registrationForm.get('attendance')?.invalid && registrationForm.get('attendance')?.touched">
+          Please select whether you will be attending physically.
+        </div>
+      </div>
+
+      <!-- Hostel Captain Volunteer (only if attending physically) -->
+      <div class="hostel-captain" *ngIf="registrationForm.get('attendance')?.value === 'Yes'">
+        <label class="section-label">Would you like to volunteer as hostel captain?</label>
+        <mat-radio-group formControlName="volunteerHostelCaptain" class="radio-group">
+          <mat-radio-button [value]="true">Yes</mat-radio-button>
+          <mat-radio-button [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="btn-container">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="registrationForm.invalid || isLoading"
+        >
+          <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+          <span *ngIf="!isLoading">Submit Registration</span>
+          <span *ngIf="isLoading">Registering...</span>
+        </button>
+      </div>
+
     </form>
   </div>
 </div>

@@ -19,8 +19,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error) => {
-      // Handle 401 Unauthorized errors
-      if (error.status === 401) {
+      // Handle 401 Unauthorized errors (but not for login/forgot-password endpoints)
+      const isAuthEndpoint = req.url.includes('/auth/login') ||
+                             req.url.includes('/auth/forgot-password') ||
+                             req.url.includes('/registrations');
+
+      if (error.status === 401 && !isAuthEndpoint) {
         localStorage.clear();
         router.navigate(['/admin/login']);
       }

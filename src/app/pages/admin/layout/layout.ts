@@ -11,6 +11,8 @@ export class Layout {
   collapsed: boolean = false;
   isMobile: boolean = false;
   isAdmin: boolean = false;
+  userName: string = '';
+  userEmail: string = '';
 
   constructor(private router: Router) {}
 
@@ -20,6 +22,8 @@ export class Layout {
     if (user) {
       const userData = JSON.parse(user);
       this.isAdmin = userData.role === 'ADMIN';
+      this.userName = `${userData.firstName} ${userData.lastName}`;
+      this.userEmail = userData.email;
     }
   }
 

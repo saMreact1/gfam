@@ -64,7 +64,7 @@
       </form>
 
       <!-- Success Result -->
-      <div *ngIf="attendee" class="result-card success">
+      <div *ngIf="attendee && !alreadyCheckedIn" class="result-card success">
         <div class="result-header">
           <mat-icon class="success-icon">check_circle</mat-icon>
           <h3>Attendee Verified Successfully!</h3>
@@ -72,70 +72,126 @@
 
         <div class="attendee-details">
           <div class="detail-section">
-            <h4><mat-icon>person</mat-icon> Personal Information</h4>
+            <h4><mat-icon>person</mat-icon> Attendee Information</h4>
             <div class="detail-grid">
               <div class="detail-item">
                 <span class="label">Full Name:</span>
-                <span class="value">{{ attendee.firstName }} {{ attendee.lastName }}</span>
+                <span class="value">{{ attendee.fullName }}</span>
               </div>
               <div class="detail-item">
-                <span class="label">Email:</span>
-                <span class="value">{{ attendee.email }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">Phone:</span>
-                <span class="value">{{ attendee.phone }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">Gender:</span>
-                <span class="value">{{ attendee.gender }}</span>
+                <span class="label">Registration Code:</span>
+                <span class="value code-highlight">{{ attendee.code }}</span>
               </div>
             </div>
           </div>
 
           <div class="detail-section">
-            <h4><mat-icon>badge</mat-icon> Registration Details</h4>
+            <h4><mat-icon>schedule</mat-icon> Prayer Details</h4>
             <div class="detail-grid">
               <div class="detail-item">
-                <span class="label">Registration Code:</span>
-                <span class="value code-highlight">{{ attendee.code }}</span>
+                <span class="label">Prayer Time:</span>
+                <span class="value">{{ attendee.prayerTime }}</span>
               </div>
               <div class="detail-item">
-                <span class="label">Role:</span>
-                <span class="value">{{ attendee.role }}</span>
+                <span class="label">Prayer Color:</span>
+                <span class="value">{{ attendee.prayerColor }}</span>
               </div>
               <div class="detail-item">
-                <span class="label">Status:</span>
-                <span class="value status-badge">{{ attendee.registrationStatus }}</span>
-              </div>
-              <div class="detail-item" *ngIf="attendee.prayerSlot">
-                <span class="label">Prayer Slot:</span>
-                <span class="value">{{ attendee.prayerSlot }}</span>
+                <span class="label">Tag Colour:</span>
+                <span class="value tag-badge" [ngClass]="'tag-' + attendee.tagToIssue.toLowerCase()">{{ attendee.tagToIssue }}</span>
               </div>
             </div>
           </div>
 
-          <div class="detail-section" *ngIf="attendee.verifiedBy">
+          <div class="detail-section">
+            <h4><mat-icon>contact_phone</mat-icon> Coordinator Information</h4>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="label">Coordinator Name:</span>
+                <span class="value">{{ attendee.coordinatorName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Coordinator Phone:</span>
+                <span class="value">{{ attendee.coordinatorPhone }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section" *ngIf="attendee.verifiedAt">
             <h4><mat-icon>verified</mat-icon> Verification Info</h4>
             <div class="detail-grid">
               <div class="detail-item">
-                <span class="label">Verified By:</span>
-                <span class="value">{{ attendee.verifiedBy }}</span>
-              </div>
-              <div class="detail-item" *ngIf="attendee.verifiedAt">
                 <span class="label">Verified At:</span>
                 <span class="value">{{ attendee.verifiedAt | date:'medium' }}</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Action Button -->
-        <div class="action-buttons">
-          <button mat-raised-button color="accent" (click)="openAssignTagDialog()">
-            <mat-icon>local_offer</mat-icon>
-            Assign Tag
-          </button>
+      <!-- Already Checked In Result -->
+      <div *ngIf="attendee && alreadyCheckedIn" class="result-card warning">
+        <div class="result-header">
+          <mat-icon class="warning-icon">warning</mat-icon>
+          <h3>Attendee Already Checked In!</h3>
+        </div>
+
+        <div class="attendee-details">
+          <div class="detail-section">
+            <h4><mat-icon>person</mat-icon> Attendee Information</h4>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="label">Full Name:</span>
+                <span class="value">{{ attendee.fullName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Registration Code:</span>
+                <span class="value code-highlight">{{ attendee.code }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4><mat-icon>schedule</mat-icon> Prayer Details</h4>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="label">Prayer Time:</span>
+                <span class="value">{{ attendee.prayerTime }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Prayer Color:</span>
+                <span class="value">{{ attendee.prayerColor }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Tag Colour:</span>
+                <span class="value tag-badge" [ngClass]="'tag-' + attendee.tagToIssue.toLowerCase()">{{ attendee.tagToIssue }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4><mat-icon>contact_phone</mat-icon> Coordinator Information</h4>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="label">Coordinator Name:</span>
+                <span class="value">{{ attendee.coordinatorName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Coordinator Phone:</span>
+                <span class="value">{{ attendee.coordinatorPhone }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section" *ngIf="attendee.verifiedAt">
+            <h4><mat-icon>verified</mat-icon> Verification Info</h4>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="label">Verified At:</span>
+                <span class="value">{{ attendee.verifiedAt | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

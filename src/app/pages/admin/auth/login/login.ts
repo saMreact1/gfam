@@ -35,11 +35,14 @@ export class AdminLogin {
 
     this.authService.login({ email, password }).subscribe({
       next: (response) => {
+        console.log('🔐 Login response:', response);
         this.isLoading = false;
         if (response.responseCode === '00' && response.data) {
           // Store JWT token and user data
-          this.authService.setToken(response.data.jwt);
+          console.log('💾 Storing token:', response.data.token);
+          this.authService.setToken(response.data.token);
           this.authService.setUser(response.data);
+          console.log('✅ Token stored in localStorage:', localStorage.getItem('adminToken'));
 
           this.snack.open(response.message || 'Login successful!', 'Close', { duration: 3000 });
           this.router.navigate(['/admin']);
@@ -48,6 +51,7 @@ export class AdminLogin {
         }
       },
       error: (err) => {
+        console.error('❌ Login error:', err);
         this.isLoading = false;
         this.snack.open('Login failed. Please check your credentials.', 'Close', { duration: 3000 });
       }

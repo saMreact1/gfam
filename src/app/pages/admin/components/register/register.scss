@@ -1,25 +1,12 @@
 .registration-wrapper {
   display: flex;
   flex-direction: column;
-  // background: #b23838;
-
-  .title {
-    color: rgb(41, 33, 33);
-    padding: 2rem;
-    text-align: center;
-
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-  }
 
   .form-container {
-    // background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    //padding: 2rem;
 
     @media (max-width: 480px) {
       padding: 0;
@@ -28,64 +15,92 @@
     .registration-form {
       background: #e6c1c158;
       width: 100%;
-      max-width: 500px;
-      gap: 1rem;
-      padding: 1rem 2rem 2rem;
-      border-radius: 32px;
-      box-shadow: 2px 3px 10px rgb(40 32 32 / 39%);
+      max-width: 600px;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      overflow-y: auto;
+      max-height: 90vh;
 
-      @media (max-width: 400px) {
-        padding: 1rem;
+      @media (max-width: 480px) {
+        padding: 2rem 1.2rem;
+        max-height: 80vh;
       }
 
       h2 {
-        margin-bottom: 1rem;
         text-align: center;
+        font-size: 1.8rem;
+        font-weight: 600;
+        font-family: monospace;
+        color: #333333;
+        margin-bottom: 1.5rem;
+
+        @media (max-width: 480px) {
+          font-size: 1.5rem;
+        }
       }
 
       .full-width {
         width: 100%;
+        background: transparent;
+
+        input {
+          background: transparent;
+        }
 
         ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-            background-color: transparent;
+          background-color: transparent;
         }
       }
 
-      div {
-        display: flex;
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1rem;
 
-        @media (max-width: 480px) {
-          display: block;
+        @media (max-width: 600px) {
+          grid-template-columns: 1fr;
         }
       }
 
-      button {
+      .section-label {
+        font-weight: 600;
         margin-top: 1rem;
-        padding: 0.75rem 2.5rem;
+        display: block;
+        color: #333333;
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .btn-container {
+        text-align: center;
+        margin-top: 1.5rem;
+
+        button {
+          mat-spinner {
+            display: inline-block;
+            margin-right: 0.5rem;
+          }
+        }
+      }
+
+      .required {
+        color: #f44336;
+        font-weight: bold;
+      }
+
+      .error-message {
+        color: #f44336;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        margin-left: 0.5rem;
       }
     }
   }
 }
 
-@media (max-width: 768px) {
-  .registration-wrapper {
-    // flex-direction: column;
 
-    .illustration {
-      flex: none;
-      height: 35vh;
-    }
-
-    .form-container {
-      flex: 1;
-      height: 65vh;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  button {
-    width: 100%;
-  }
-}

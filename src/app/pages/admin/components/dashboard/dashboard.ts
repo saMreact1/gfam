@@ -17,6 +17,7 @@ export class Dashboard implements OnInit {
   totalRegistered = 0;
   attended = 0;
   pending = 0;
+  virtual = 0;
 
   lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
@@ -127,10 +128,18 @@ export class Dashboard implements OnInit {
   }
 
   updateDashboardData(stats: DashboardStatsResponse) {
+    console.log('📊 Dashboard stats received:', stats);
     // Update stats
-    this.totalRegistered = stats.totalRegistered;
-    this.attended = stats.attended;
-    this.pending = stats.pending;
+    this.totalRegistered = stats.totalRegistered || 0;
+    this.attended = stats.attended || 0;
+    this.pending = stats.pending || 0;
+    this.virtual = stats.virtual || 0;
+    console.log('📊 Updated values:', {
+      totalRegistered: this.totalRegistered,
+      attended: this.attended,
+      pending: this.pending,
+      virtual: this.virtual
+    });
 
     // Update line chart (Registrations Over Time)
     const timeLabels = Object.keys(stats.registrationsOverTime);

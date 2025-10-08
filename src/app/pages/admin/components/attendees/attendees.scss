@@ -127,28 +127,34 @@ tr {
   min-width: 100px;
 }
 
-.status-pending {
-  background: rgba(255, 193, 7, 0.15);
-  color: #f57c00;
-  border: 1px solid rgba(255, 193, 7, 0.3);
+.status-registered {
+  background: rgba(102, 126, 234, 0.15);
+  color: #667eea;
+  border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
-.status-approved {
+.status-checked-in {
   background: rgba(76, 175, 80, 0.15);
   color: #2e7d32;
   border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
-.status-checked-in {
-  background: rgba(33, 150, 243, 0.15);
-  color: #1565c0;
-  border: 1px solid rgba(33, 150, 243, 0.3);
+.status-no-show {
+  background: rgba(255, 152, 0, 0.15);
+  color: #e65100;
+  border: 1px solid rgba(255, 152, 0, 0.3);
 }
 
-.status-rejected {
+.status-cancelled {
   background: rgba(244, 67, 54, 0.15);
   color: #c62828;
   border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.status-virtual {
+  background: rgba(156, 39, 176, 0.15);
+  color: #7b1fa2;
+  border: 1px solid rgba(156, 39, 176, 0.3);
 }
 
 .code-badge {
@@ -159,6 +165,24 @@ tr {
   padding: 0.3rem 0.6rem;
   border-radius: 6px;
   font-size: 0.9rem;
+}
+
+mat-paginator {
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+  border-radius: 0 0 16px 16px;
+  padding: 1rem;
+
+  ::ng-deep .mat-mdc-paginator-container {
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  ::ng-deep .mat-mdc-paginator-page-size-label,
+  ::ng-deep .mat-mdc-paginator-range-label {
+    color: #495057;
+    font-weight: 500;
+  }
 }
 
 /* ✅ Small screens adjustments */

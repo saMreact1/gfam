@@ -68,10 +68,22 @@
 
     .cards-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
         align-items: stretch;
+
+        @media (min-width: 1200px) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media (max-width: 768px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+        }
     }
 
     .stat-card {
@@ -106,6 +118,10 @@
 
         &.pending::before {
             background: linear-gradient(90deg, #ff9800 0%, #f57c00 100%);
+        }
+
+        &.virtual::before {
+            background: linear-gradient(90deg, #9c27b0 0%, #7b1fa2 100%);
         }
 
         &:hover {
@@ -153,23 +169,35 @@
             }
         }
 
+        &.virtual .stat-icon {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, rgba(123, 31, 162, 0.15) 100%);
+
+            mat-icon {
+                color: #9c27b0;
+            }
+        }
+
         .stat-content {
             flex: 1;
-            text-align: left;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
 
-            mat-card-title {
-                font-size: 0.9rem;
+            .stat-title {
+                font-size: 0.85rem;
                 font-weight: 600;
                 color: #6c757d;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
-                margin-bottom: 0.5rem;
             }
 
-            h2 {
+            .stat-number {
                 font-size: 2.5rem;
                 font-weight: 700;
-                margin: 0.25rem 0;
+                margin: 0;
+                line-height: 1;
+                color: #1a1a2e;
             }
 
             .stat-label {

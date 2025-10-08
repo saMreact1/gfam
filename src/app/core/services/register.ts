@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RegistrationResponse } from '../../pages/registration/registration';
 
@@ -22,8 +22,19 @@ export class Register {
 
   constructor(private http: HttpClient) { }
 
-  register(data: any) {
-    return this.http.post<RegistrationResponse>(`${this.api}/registrations`, data);
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      return new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+    }
+    return new HttpHeaders();
+  }
+
+  register(data: any, useAuth: boolean = false) {
+    const headers = useAuth ? this.getHeaders() : new HttpHeaders();
+    return this.http.post<RegistrationResponse>(`${this.api}/registrations`, data, { headers });
   }
 
   sendOtp(registrationData: any) {

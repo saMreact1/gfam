@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -7,18 +7,14 @@ export interface VerifyRequest {
 }
 
 export interface VerifyResponse {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  prayerSlot: string;
-  role: string;
-  gender: string;
-  registrationStatus: string;
   code: string;
-  verifiedBy?: string;
-  verifiedAt?: string;
+  fullName: string;
+  prayerColor: string;
+  prayerTime: string;
+  tagToIssue: string;
+  coordinatorName: string;
+  coordinatorPhone: string;
+  verifiedAt: string;
 }
 
 export interface ApiResponse<T> {
@@ -35,8 +31,19 @@ export class VerificationService {
 
   constructor(private http: HttpClient) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('adminToken');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
   verifyAttendee(code: string): Observable<ApiResponse<VerifyResponse>> {
-    return this.http.post<ApiResponse<VerifyResponse>>(`${this.api}/verify`, { code });
+    return this.http.post<ApiResponse<VerifyResponse>>(
+      `${this.api}/verify`,
+      { code },
+      { headers: this.getHeaders() }
+    );
   }
 }
 

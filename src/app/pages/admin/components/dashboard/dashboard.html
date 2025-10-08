@@ -22,11 +22,9 @@
           <mat-icon>people</mat-icon>
         </div>
         <div class="stat-content">
-          <mat-card-title>Total Registered</mat-card-title>
-          <mat-card-content>
-            <h2>{{ totalRegistered | number }}</h2>
-            <p class="stat-label">Attendees</p>
-          </mat-card-content>
+          <div class="stat-title">TOTAL REGISTERED</div>
+          <h2 class="stat-number">{{ totalRegistered }}</h2>
+          <p class="stat-label">Attendees</p>
         </div>
       </mat-card>
 
@@ -35,11 +33,9 @@
           <mat-icon>check_circle</mat-icon>
         </div>
         <div class="stat-content">
-          <mat-card-title>Attended</mat-card-title>
-          <mat-card-content>
-            <h2>{{ attended | number }}</h2>
-            <p class="stat-label">Checked In</p>
-          </mat-card-content>
+          <div class="stat-title">ATTENDED</div>
+          <h2 class="stat-number">{{ attended }}</h2>
+          <p class="stat-label">Checked In</p>
         </div>
       </mat-card>
 
@@ -48,11 +44,20 @@
           <mat-icon>schedule</mat-icon>
         </div>
         <div class="stat-content">
-          <mat-card-title>Pending</mat-card-title>
-          <mat-card-content>
-            <h2>{{ pending | number }}</h2>
-            <p class="stat-label">Not Checked In</p>
-          </mat-card-content>
+          <div class="stat-title">PENDING</div>
+          <h2 class="stat-number">{{ pending }}</h2>
+          <p class="stat-label">Not Checked In</p>
+        </div>
+      </mat-card>
+
+      <mat-card class="stat-card virtual">
+        <div class="stat-icon">
+          <mat-icon>computer</mat-icon>
+        </div>
+        <div class="stat-content">
+          <div class="stat-title">VIRTUAL</div>
+          <h2 class="stat-number">{{ virtual }}</h2>
+          <p class="stat-label">Online Attendees</p>
         </div>
       </mat-card>
     </div>

@@ -1,14 +1,17 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
   AttendeeService,
   AttendeeResponse,
   MinisterRole,
   Gender,
-  RegistrationStatus
+  RegistrationStatus,
+  PagedAttendeeResponse
 } from '../../../../core/services/attendee.service';
 
 export interface Attendee {
@@ -30,15 +33,25 @@ export interface Attendee {
   templateUrl: './attendees.html',
   styleUrl: './attendees.scss'
 })
-export class Attendees {
+export class Attendees implements OnDestroy {
   displayedColumns: string[] = [
     'firstName', 'lastName', 'email', 'phone', 'prayerSlot', 'role', 'gender', 'registrationStatus', 'code'
   ];
   dataSource = new MatTableDataSource<Attendee>([]);
   allAttendees: Attendee[] = [];
   statusFilter: string = 'all';
+  searchQuery: string = '';
   isLoading = false;
   eventId = 1;
+
+  // Pagination
+  totalElements = 0;
+  pageSize = 20;
+  pageIndex = 0;
+  pageSizeOptions = [10, 20, 50, 100];
+
+  // Search debounce
+  private searchSubject = new Subject<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -46,7 +59,17 @@ export class Attendees {
   constructor(
     private attendeeService: AttendeeService,
     private snack: MatSnackBar
-  ) {}
+  ) {
+    // Debounce search input
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(searchValue => {
+      this.searchQuery = searchValue;
+      this.pageIndex = 0;
+      this.loadAttendees();
+    });
+  }
 
   ngOnInit() {
     this.loadAttendees();
@@ -54,16 +77,29 @@ export class Attendees {
 
   loadAttendees() {
     this.isLoading = true;
-    this.attendeeService.getAllAttendees().subscribe({
+    const status = this.statusFilter !== 'all' ? this.statusFilter : undefined;
+    const search = this.searchQuery || undefined;
+
+    this.attendeeService.getAllAttendees(this.pageIndex, this.pageSize, status, search).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response.responseCode === '00' && response.data) {
+          const pagedData = response.data;
           // Map tagStatus to registrationStatus
-          this.allAttendees = response.data.map(attendee => ({
+          this.allAttendees = pagedData.content.map(attendee => ({
             ...attendee,
             registrationStatus: attendee.tagStatus
           }));
           this.dataSource.data = this.allAttendees;
+          this.totalElements = pagedData.totalElements;
+          console.log('📄 Pagination info:', {
+            totalElements: pagedData.totalElements,
+            totalPages: pagedData.totalPages,
+            currentPage: pagedData.number,
+            pageSize: pagedData.size,
+            status: this.statusFilter,
+            search: this.searchQuery
+          });
         } else {
           this.snack.open(response.message || 'Failed to load attendees', 'Close', { duration: 3000 });
         }
@@ -75,28 +111,26 @@ export class Attendees {
     });
   }
 
+  onPageChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadAttendees();
+  }
+
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+    // Don't use client-side pagination since we're doing server-side
     this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.searchSubject.next(filterValue);
   }
 
   applyStatusFilter() {
-    if (this.statusFilter === 'all') {
-      this.dataSource.data = this.allAttendees;
-    } else if (this.statusFilter === 'pending') {
-      this.dataSource.data = this.allAttendees.filter(a => a.registrationStatus === RegistrationStatus.PENDING);
-    } else if (this.statusFilter === 'approved') {
-      this.dataSource.data = this.allAttendees.filter(a => a.registrationStatus === RegistrationStatus.APPROVED);
-    } else if (this.statusFilter === 'checked_in') {
-      this.dataSource.data = this.allAttendees.filter(a => a.registrationStatus === RegistrationStatus.CHECKED_IN);
-    } else if (this.statusFilter === 'rejected') {
-      this.dataSource.data = this.allAttendees.filter(a => a.registrationStatus === RegistrationStatus.REJECTED);
-    }
+    // Reset to first page when filtering
+    this.pageIndex = 0;
+    this.loadAttendees();
   }
 
   removeUser(user: Attendee) {
@@ -109,14 +143,16 @@ export class Attendees {
 
   getStatusClass(status: RegistrationStatus): string {
     switch (status) {
-      case RegistrationStatus.PENDING:
-        return 'status-pending';
-      case RegistrationStatus.APPROVED:
-        return 'status-approved';
+      case RegistrationStatus.REGISTERED:
+        return 'status-registered';
       case RegistrationStatus.CHECKED_IN:
         return 'status-checked-in';
-      case RegistrationStatus.REJECTED:
-        return 'status-rejected';
+      case RegistrationStatus.NO_SHOW:
+        return 'status-no-show';
+      case RegistrationStatus.CANCELLED:
+        return 'status-cancelled';
+      case RegistrationStatus.VIRTUAL:
+        return 'status-virtual';
       default:
         return '';
     }
@@ -124,14 +160,16 @@ export class Attendees {
 
   getStatusLabel(status: RegistrationStatus): string {
     switch (status) {
-      case RegistrationStatus.PENDING:
-        return '⏳ Pending';
-      case RegistrationStatus.APPROVED:
-        return '✅ Approved';
+      case RegistrationStatus.REGISTERED:
+        return '📝 Registered';
       case RegistrationStatus.CHECKED_IN:
-        return '🎫 Checked In';
-      case RegistrationStatus.REJECTED:
-        return '❌ Rejected';
+        return '✅ Checked In';
+      case RegistrationStatus.NO_SHOW:
+        return '⚠️ No Show';
+      case RegistrationStatus.CANCELLED:
+        return '❌ Cancelled';
+      case RegistrationStatus.VIRTUAL:
+        return '💻 Virtual';
       default:
         return status;
     }
@@ -155,5 +193,9 @@ export class Attendees {
         this.snack.open('Failed to download attendees list. Please try again.', 'Close', { duration: 3000 });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.searchSubject.complete();
   }
 }

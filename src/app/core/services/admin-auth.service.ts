@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -8,7 +8,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  jwt: string;
+  token: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -72,6 +72,13 @@ export class AdminAuthService {
 
   constructor(private http: HttpClient) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('adminToken');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
   login(data: LoginRequest): Observable<ApiResponse<LoginResponse>> {
     return this.http.post<ApiResponse<LoginResponse>>(`${this.api}/auth/login`, data);
   }
@@ -81,23 +88,40 @@ export class AdminAuthService {
   }
 
   inviteUser(data: InviteUserRequest): Observable<ApiResponse<InviteUserResponse>> {
-    return this.http.post<ApiResponse<InviteUserResponse>>(`${this.api}/auth/invite-user`, data);
+    return this.http.post<ApiResponse<InviteUserResponse>>(
+      `${this.api}/users/invite`,
+      data,
+      { headers: this.getHeaders() }
+    );
   }
 
   changePassword(data: ChangePasswordRequest): Observable<ApiResponse<string>> {
-    return this.http.post<ApiResponse<string>>(`${this.api}/auth/change-password`, data);
+    return this.http.post<ApiResponse<string>>(
+      `${this.api}/auth/change-password`,
+      data,
+      { headers: this.getHeaders() }
+    );
   }
 
   getAllUsers(): Observable<ApiResponse<UserResponse[]>> {
-    return this.http.get<ApiResponse<UserResponse[]>>(`${this.api}/users`);
+    return this.http.get<ApiResponse<UserResponse[]>>(
+      `${this.api}/users`,
+      { headers: this.getHeaders() }
+    );
   }
 
   getUserByEmail(email: string): Observable<ApiResponse<UserResponse>> {
-    return this.http.get<ApiResponse<UserResponse>>(`${this.api}/users/${email}`);
+    return this.http.get<ApiResponse<UserResponse>>(
+      `${this.api}/users/${email}`,
+      { headers: this.getHeaders() }
+    );
   }
 
   deactivateUser(userId: number): Observable<ApiResponse<string>> {
-    return this.http.delete<ApiResponse<string>>(`${this.api}/users/${userId}`);
+    return this.http.delete<ApiResponse<string>>(
+      `${this.api}/users/${userId}`,
+      { headers: this.getHeaders() }
+    );
   }
 
   logout(): void {

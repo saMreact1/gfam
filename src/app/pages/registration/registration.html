@@ -107,18 +107,6 @@
           </mat-form-field>
         </div>
 
-        <!-- Check-in Date -->
-        <!-- <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Check-in Date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="checkInPicker"
-            formControlName="checkInDate"
-          />
-          <mat-datepicker-toggle matSuffix [for]="checkInPicker"></mat-datepicker-toggle>
-          <mat-datepicker #checkInPicker></mat-datepicker>
-        </mat-form-field> -->
-
         <!-- Nursing or Pregnant (only if female) -->
         <div class="nursing" *ngIf="registrationForm.get('gender')?.value === 'Female'">
           <label class="section-label">Nursing mother or pregnant?</label>

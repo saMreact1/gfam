@@ -5,7 +5,7 @@
         <div class="actions">
             <mat-form-field appearance="outline" class="filter-field">
                 <mat-label>Search Attendees</mat-label>
-                <input matInput (keyup)="applyFilter($event)" placeholder="Search by name, email, city...">
+                <input matInput (keyup)="applyFilter($event)" placeholder="Search by name, email, and phone number">
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
 
@@ -13,10 +13,11 @@
                 <mat-label>Filter by Status</mat-label>
                 <mat-select [(value)]="statusFilter" (selectionChange)="applyStatusFilter()">
                     <mat-option value="all">All Attendees</mat-option>
-                    <mat-option value="pending">Pending</mat-option>
-                    <mat-option value="approved">Approved</mat-option>
-                    <mat-option value="checked_in">Checked In</mat-option>
-                    <mat-option value="rejected">Rejected</mat-option>
+                    <mat-option value="REGISTERED">Registered</mat-option>
+                    <mat-option value="CHECKED_IN">Checked In</mat-option>
+                    <mat-option value="NO_SHOW">No Show</mat-option>
+                    <mat-option value="CANCELLED">Cancelled</mat-option>
+                    <mat-option value="VIRTUAL">Virtual</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
@@ -100,7 +101,14 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
 
-            <!-- <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator> -->
+            <mat-paginator
+                [length]="totalElements"
+                [pageSize]="pageSize"
+                [pageIndex]="pageIndex"
+                [pageSizeOptions]="pageSizeOptions"
+                (page)="onPageChange($event)"
+                showFirstLastButtons>
+            </mat-paginator>
         </div>
     </mat-card-content>
 </mat-card>
