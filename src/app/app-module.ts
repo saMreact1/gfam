@@ -25,7 +25,6 @@ import { Layout } from './pages/admin/layout/layout';
 import { Dashboard } from './pages/admin/components/dashboard/dashboard';
 import { Register } from './pages/admin/components/register/register';
 import { CodeChecker } from './pages/admin/components/code-checker/code-checker';
-import { OtpVerification } from './pages/otp-verification/otp-verification';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { HttpClientModule } from '@angular/common/http';
@@ -42,7 +41,6 @@ import { InviteUser } from './pages/admin/components/invite-user/invite-user';
     App,
     LandingPage,
     Registration,
-    OtpVerification,
     Attendees,
     Layout,
     Dashboard,

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Register as RegisterService } from '../../../../core/services/register';
+import { SuccessDialog } from '../../../registration/components/success-dialog';
 
 @Component({
   selector: 'app-register',
@@ -19,6 +21,7 @@ export class Register implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snack: MatSnackBar,
+    private dialog: MatDialog,
     private registerService: RegisterService
   ) {
     this.registrationForm = this.fb.group({
@@ -84,43 +87,46 @@ export class Register implements OnInit {
       volunteerAsHouseCaptain: raw.attendance === 'Yes' ? raw.volunteerHostelCaptain : false,
     };
 
-    // Call registration endpoint directly with Bearer token (no OTP for admin)
-    this.registerService.register(payload, true).subscribe({
+    // Call registration endpoint directly
+    this.registerService.register(payload).subscribe({
       next: (response) => {
         this.isLoading = false;
-        if (response.responseCode === '00' && response.data) {
-          this.snack.open(response.message || 'Registration successful!', 'Close', {
-            duration: 5000,
-            panelClass: ['success-snackbar']
-          });
-          // Show success details
-          this.showSuccessMessage(response.data);
-          // Reset form
+
+        // Use the responseCode directly from the API
+        const responseCode = response.responseCode || response.data?.responseCode;
+
+        // Open success dialog for all cases (success, already registered, or failure)
+        this.dialog.open(SuccessDialog, {
+          width: '500px',
+          disableClose: true,
+          data: {
+            responseCode: responseCode,
+            message: response.message,
+            data: response.data
+          }
+        });
+
+        // Reset form only on successful registration (not for already registered)
+        if (responseCode === 'REGISTRATION_SUCCESSFUL' || responseCode === 'REGISTRATION_VIRTUAL') {
           this.registrationForm.reset({
             eventId: 1,
             checkInDate: new Date()
           });
-        } else {
-          this.snack.open(response.message || 'Registration failed', 'Close', { duration: 3000 });
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open(err.error?.message || 'Registration failed. Please try again.', 'Close', {
-          duration: 3000
+        // Show error dialog for network/server errors
+        this.dialog.open(SuccessDialog, {
+          width: '500px',
+          disableClose: true,
+          data: {
+            responseCode: 'REGISTRATION_FAILED',
+            message: err.error?.message || 'Registration failed. Please try again.',
+            data: null
+          }
         });
       }
     });
-  }
-
-  showSuccessMessage(data: any) {
-    const message = `
-      Registration Code: ${data.code}
-      Name: ${data.firstName} ${data.lastName}
-      Prayer Time: ${data.prayerTime}
-      Prayer Color: ${data.prayerColor}
-      Coordinator: ${data.coordinatorName} (${data.coordinatorPhone})
-    `;
-    alert(message);
   }
 }

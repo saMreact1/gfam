@@ -11,19 +11,22 @@ export interface RegistrationResponse {
   message: string;
   responseCode: string;
   data: {
-    eventId: number;
+    eventId?: number;
     code: string;
     firstName: string;
     lastName: string;
-    email: string;
+    email?: string;
     phone: string;
-    ministerRole: string;
+    ministerRole?: string;
+    gender?: string;
     prayerColor: string;
     prayerTime: string;
     coordinatorName: string;
     coordinatorPhone: string;
-    checkInDate: string;
+    checkInDate: string | null;
     accommodationType: string;
+    createdAt?: string;
+    responseCode?: string;
   }
 }
 
@@ -91,9 +94,15 @@ export class Registration implements OnInit {
     });
   }
 
-  onSubmit() {
-    if (this.registrationForm.invalid) return;
+  isLoading = false;
 
+  onSubmit() {
+    if (this.registrationForm.invalid) {
+      this.snack.open('Please fill all required fields correctly', 'Close', { duration: 3000 });
+      return;
+    }
+
+    this.isLoading = true;
     const raw = this.registrationForm.value;
 
     const payload = {
@@ -105,15 +114,48 @@ export class Registration implements OnInit {
       checkInDate: new Date().toISOString().split('T')[0],
       attendPhysically: raw.attendance === 'Yes',
       volunteerAsHouseCaptain: raw.attendance === 'Yes' ? raw.volunteerHostelCaptain : false,
-      // lgaId: null,
     };
 
-    // Navigate to OTP verification page with registration data
-    // this.router.navigate(['/otp-verification'], {
-    //   state: {
-    //     email: raw.email,
-    //     registrationData: payload
-    //   }
-    // });
+    // Call registration endpoint directly
+    this.reg.register(payload).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+
+        // Use the responseCode directly from the API
+        const responseCode = response.responseCode || response.data?.responseCode;
+
+        // Open success dialog for all cases (success, already registered, or failure)
+        this.dialog.open(SuccessDialog, {
+          width: '500px',
+          disableClose: true,
+          data: {
+            responseCode: responseCode,
+            message: response.message,
+            data: response.data
+          }
+        });
+
+        // Reset form only on successful registration (not for already registered)
+        if (responseCode === 'REGISTRATION_SUCCESSFUL' || responseCode === 'REGISTRATION_VIRTUAL') {
+          this.registrationForm.reset({
+            eventId: 1,
+            checkInDate: new Date()
+          });
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        // Show error dialog for network/server errors
+        this.dialog.open(SuccessDialog, {
+          width: '500px',
+          disableClose: true,
+          data: {
+            responseCode: 'REGISTRATION_FAILED',
+            message: err.error?.message || 'Registration failed. Please try again.',
+            data: null
+          }
+        });
+      }
+    });
   }
 }

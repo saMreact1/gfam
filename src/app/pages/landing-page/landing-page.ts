@@ -7,16 +7,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
   styleUrl: './landing-page.scss'
 })
 export class LandingPage implements OnInit, OnDestroy {
-  // Program start date - Set to today at midnight
+  // Program start date - Set to yesterday at midnight (so today is Day 2)
   programStartDate: number;
   dayCheckInterval: any;
-  currentDay = 1;
+  currentDay = 2;
 
   constructor() {
-    // Set program start to today at midnight
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    this.programStartDate = today.getTime();
+    // Set program start to yesterday at midnight (so today is Day 2)
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(0, 0, 0, 0);
+    this.programStartDate = yesterday.getTime();
   }
 
   images = [
@@ -53,17 +54,17 @@ export class LandingPage implements OnInit, OnDestroy {
     // Each day is 24 hours = 86400000 milliseconds
     const daysPassed = Math.floor(timeSinceStart / (1000 * 60 * 60 * 24));
 
-    // Day 1 starts at 0 days passed, Day 2 at 1 day passed, etc.
+    // Day 1 starts at 0 days passed, Day 2 at 1 day passed, Day 3 at 2 days passed
     this.currentDay = daysPassed + 1;
 
-    // Cap at Day 3 (72 hours = 3 days)
+    // Cap at Day 3 - do not increment beyond Day 3
     if (this.currentDay > 3) {
       this.currentDay = 3;
     }
 
-    // If program hasn't started yet, show Day 1
-    if (this.currentDay < 1) {
-      this.currentDay = 1;
+    // Minimum is Day 2 (since we started yesterday)
+    if (this.currentDay < 2) {
+      this.currentDay = 2;
     }
   }
 

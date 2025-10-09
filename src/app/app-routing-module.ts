@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingPage } from './pages/landing-page/landing-page';
 import { Registration } from './pages/registration/registration';
-import { OtpVerification } from './pages/otp-verification/otp-verification';
 import { Layout } from './pages/admin/layout/layout';
 import { Dashboard } from './pages/admin/components/dashboard/dashboard';
 import { Attendees } from './pages/admin/components/attendees/attendees';
@@ -18,7 +17,6 @@ import { authGuard, adminGuard } from './core/guards/auth.guard';
 const routes: Routes = [
   { path: '', component: LandingPage },
   { path: 'register', component: Registration },
-  { path: 'otp-verification', component: OtpVerification },
   { path: 'admin/login', component: AdminLogin },
   { path: 'admin/forgot-password', component: ForgotPassword },
   { path: 'admin', component: Layout, canActivate: [authGuard],
