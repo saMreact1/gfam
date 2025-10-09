@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Register } from '../../core/services/register';
-import { SuccessDialog } from './components/success-dialog';
 
 export interface RegistrationResponse {
   success: boolean;
@@ -45,7 +43,6 @@ export class Registration implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snack: MatSnackBar,
-    private dialog: MatDialog,
     private router: Router,
     private reg: Register
   ) {
@@ -102,7 +99,6 @@ export class Registration implements OnInit {
       return;
     }
 
-    this.isLoading = true;
     const raw = this.registrationForm.value;
 
     const payload = {
@@ -116,45 +112,10 @@ export class Registration implements OnInit {
       volunteerAsHouseCaptain: raw.attendance === 'Yes' ? raw.volunteerHostelCaptain : false,
     };
 
-    // Call registration endpoint directly
-    this.reg.register(payload).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-
-        // Use the responseCode directly from the API
-        const responseCode = response.responseCode || response.data?.responseCode;
-
-        // Open success dialog for all cases (success, already registered, or failure)
-        this.dialog.open(SuccessDialog, {
-          width: '500px',
-          disableClose: true,
-          data: {
-            responseCode: responseCode,
-            message: response.message,
-            data: response.data
-          }
-        });
-
-        // Reset form only on successful registration (not for already registered)
-        if (responseCode === 'REGISTRATION_SUCCESSFUL' || responseCode === 'REGISTRATION_VIRTUAL') {
-          this.registrationForm.reset({
-            eventId: 1,
-            checkInDate: new Date()
-          });
-        }
-      },
-      error: (err) => {
-        this.isLoading = false;
-        // Show error dialog for network/server errors
-        this.dialog.open(SuccessDialog, {
-          width: '500px',
-          disableClose: true,
-          data: {
-            responseCode: 'REGISTRATION_FAILED',
-            message: err.error?.message || 'Registration failed. Please try again.',
-            data: null
-          }
-        });
+    this.router.navigate(['/otp-verification'], {
+      state: {
+        email: raw.email,
+        registrationData: payload
       }
     });
   }
