@@ -109,11 +109,11 @@ export class Registration implements OnInit {
     };
 
     // Navigate to OTP verification page with registration data
-    this.router.navigate(['/otp-verification'], {
-      state: {
-        email: raw.email,
-        registrationData: payload
-      }
-    });
+    // this.router.navigate(['/otp-verification'], {
+    //   state: {
+    //     email: raw.email,
+    //     registrationData: payload
+    //   }
+    // });
   }
 }
