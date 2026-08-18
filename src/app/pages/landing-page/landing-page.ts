@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-landing-page',
@@ -7,18 +7,28 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
   styleUrl: './landing-page.scss'
 })
 export class LandingPage implements OnInit, OnDestroy {
-  // Program start date - Set to yesterday at midnight (so today is Day 2)
-  programStartDate: number;
+  programStartDate = new Date('2026-10-07T00:00:00').getTime();
+  programEndDate = new Date('2026-10-10T23:59:59').getTime();
   dayCheckInterval: any;
-  currentDay = 2;
+  countdownInterval: any;
+  currentDay = 1;
+  programStarted = false;
+  programEnded = false;
+  isScrolled = false;
 
-  constructor() {
-    // Set program start to yesterday at midnight (so today is Day 2)
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(0, 0, 0, 0);
-    this.programStartDate = yesterday.getTime();
-  }
+  countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+  speakers = [
+    { title: 'HOST', name: 'Prophet Abraham Adebayo', image: '../../../assets/images/Prophet_Ayo_Jeje.png' },
+    { title: 'Reverend', name: 'Austin Ukporhe', image: '../../../assets/images/REV_AUSTIN.png' },
+    { title: 'Prophet', name: 'Ayo Jeje', image: '../../../assets/images/Prophet_Ayo_Jeje.png' },
+    { title: 'Evangelist', name: 'M.F Adeyemi', image: '../../../assets/images/Daddy_MF_Adeyemi.png' },
+    { title: 'Pastor', name: 'Makin Olaosebikan', image: '../../../assets/images/Baba_makin.png' },
+    { title: 'Pastor', name: 'Shola Ajewole', image: '../../../assets/images/Pst_Sola_Ajewole.png' },
+    { title: 'Prophet', name: 'Cherub Obadare', image: '../../../assets/images/Prophet_Cherub_Obadare.png' },
+    { title: 'Apostle', name: 'Tolu Agboola', image: '../../../assets/images/Apostle_Tolu_Agboola.png' },
+    { title: 'Pastor', name: 'Segun Michael', image: '../../../assets/images/Pst_Segun_Michael.png' },
+  ];
 
   images = [
     { src: '../../../assets/images/Apostle_Tolu_Agboola.png', name: 'Ap. Tolu Agboola' },
@@ -31,44 +41,56 @@ export class LandingPage implements OnInit, OnDestroy {
     { src: '../../../assets/images/Pst_Sola_Ajewole.png', name: 'Pst. Sola Ajewole' },
     { src: '../../../assets/images/REV_AUSTIN.png', name: 'Rev. Austin Ukporhe' },
   ];
-  currentImageIndex = 0;
-  carouselInterval: any;
 
   ngOnInit(): void {
-    this.updateCurrentDay();
-    // Check every minute to update the day
-    this.dayCheckInterval = setInterval(() => this.updateCurrentDay(), 60000);
-    this.carouselInterval = setInterval(() => this.nextImage(), 2000);
+    this.updateStatus();
+    this.dayCheckInterval = setInterval(() => this.updateStatus(), 60000);
+    this.countdownInterval = setInterval(() => this.updateCountdown(), 1000);
+    this.updateCountdown();
   }
 
   ngOnDestroy(): void {
     clearInterval(this.dayCheckInterval);
-    clearInterval(this.carouselInterval);
+    clearInterval(this.countdownInterval);
   }
 
-  updateCurrentDay() {
-    const now = new Date().getTime();
-    const timeSinceStart = now - this.programStartDate;
+  @HostListener('window:scroll')
+  onScroll() {
+    this.isScrolled = window.scrollY > 50;
+  }
 
-    // Calculate which day we're on (1-indexed)
-    // Each day is 24 hours = 86400000 milliseconds
-    const daysPassed = Math.floor(timeSinceStart / (1000 * 60 * 60 * 24));
+  updateStatus() {
+    const now = Date.now();
 
-    // Day 1 starts at 0 days passed, Day 2 at 1 day passed, Day 3 at 2 days passed
-    this.currentDay = daysPassed + 1;
-
-    // Cap at Day 3 - do not increment beyond Day 3
-    if (this.currentDay > 3) {
-      this.currentDay = 3;
-    }
-
-    // Minimum is Day 2 (since we started yesterday)
-    if (this.currentDay < 2) {
-      this.currentDay = 2;
+    if (now < this.programStartDate) {
+      this.programStarted = false;
+      this.programEnded = false;
+    } else if (now >= this.programStartDate && now <= this.programEndDate) {
+      this.programStarted = true;
+      this.programEnded = false;
+      const daysPassed = Math.floor((now - this.programStartDate) / (1000 * 60 * 60 * 24));
+      this.currentDay = Math.min(daysPassed + 1, 3);
+    } else {
+      this.programStarted = false;
+      this.programEnded = true;
     }
   }
 
-  nextImage() {
-    this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
+  updateCountdown() {
+    const now = Date.now();
+    const diff = this.programStartDate - now;
+
+    if (diff <= 0) {
+      this.countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      this.updateStatus();
+      return;
+    }
+
+    this.countdown = {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+      seconds: Math.floor((diff % (1000 * 60)) / 1000),
+    };
   }
 }

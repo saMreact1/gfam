@@ -1,46 +1,137 @@
 <div class="landing-container">
-  <img class="gfam-logo" src="https://res.cloudinary.com/dcktnvdqt/image/upload/v1758059416/gfam-logo1_clydmw.png" alt="">
-  <!-- Hero Section -->
-  <div class="hero">
-    <div class="overlay">
-      <div class="hero-content">
-        <h1>72 HOURS INTERCESSION 2025</h1>
-        <h3>Theme: <span>“Behold, the TABERNACLE of God”</span></h3>
+  <!-- Navigation -->
+  <nav class="nav-bar" [class.scrolled]="isScrolled">
+    <img class="gfam-logo" src="https://res.cloudinary.com/dcktnvdqt/image/upload/v1758059416/gfam-logo1_clydmw.png" alt="GFAM Logo">
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#speakers">Speakers</a>
+      <a href="#partner">Partner</a>
+      <button mat-flat-button color="accent" class="nav-cta" routerLink="/register">Register</button>
+    </div>
+  </nav>
 
-        <!-- Day Counter -->
-        <div class="day-counter">
-          <h2>Program in Progress</h2>
-          <div class="day-box">
-            <span class="day-label">DAY</span>
-            <span class="day-number">{{ currentDay }}</span>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://res.cloudinary.com/dcktnvdqt/image/upload/v1787058376/Image_fey8v5.png" alt="The Harvest 2026" class="hero-image">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">72 HOURS INTERCESSION</div>
+      <h1 class="hero-title">The <span>Harvest</span></h1>
+      <p class="hero-verse">"Lift up your eyes, and look on the fields; for they are white already to harvest." <em>John 4:35</em></p>
+      <div class="hero-dates">
+        <div class="date-badge">
+          <span class="date-label">7th</span>
+          <span class="date-month">OCT</span>
+        </div>
+        <span class="date-separator">to</span>
+        <div class="date-badge">
+          <span class="date-label">10th</span>
+          <span class="date-month">OCT</span>
+        </div>
+        <span class="date-year">2026</span>
+      </div>
+
+      <!-- Countdown -->
+      <div class="countdown" *ngIf="!programStarted">
+        <h3>Program Starts In</h3>
+        <div class="countdown-grid">
+          <div class="countdown-item">
+            <span class="countdown-number">{{ countdown.days }}</span>
+            <span class="countdown-label">Days</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-number">{{ countdown.hours }}</span>
+            <span class="countdown-label">Hours</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-number">{{ countdown.minutes }}</span>
+            <span class="countdown-label">Mins</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-number">{{ countdown.seconds }}</span>
+            <span class="countdown-label">Secs</span>
           </div>
         </div>
+      </div>
 
-        <!-- CTA -->
-        <button mat-flat-button color="accent" class="cta-btn" routerLink="/register">
-          Register Now
-        </button>
+      <!-- Day Counter (shown during program) -->
+      <div class="day-counter" *ngIf="programStarted && !programEnded">
+        <h3>Program in Progress</h3>
+        <div class="day-box">
+          <span class="day-label">DAY</span>
+          <span class="day-number">{{ currentDay }}</span>
+          <span class="day-total">of 3</span>
+        </div>
+      </div>
+
+      <!-- Ended message -->
+      <div class="ended-message" *ngIf="programEnded">
+        <h3>Program Has Ended</h3>
+        <p>Thank you for being part of The Harvest 2026</p>
+      </div>
+
+      <button mat-flat-button color="accent" class="cta-btn" routerLink="/register">
+        Register Now
+      </button>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section" id="about">
+    <div class="section-container">
+      <h2 class="section-title">About The Program</h2>
+      <p class="about-text">
+        The Harvest is a powerful 72-hour intercession program organized by Grace For All Men International Ministry.
+        Join us for three days of intense prayer, worship, and spiritual renewal as we lift our voices together
+        for divine intervention in our lives, families, and nations.
+      </p>
+      <div class="location-info">
+        <mat-icon>location_on</mat-icon>
+        <span>C&amp;S Oke-Igbala, Erin-Ile, Kwara State</span>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- Speakers Section -->
+  <section class="speakers-section" id="speakers">
+    <div class="section-container">
+      <h2 class="section-title">Our Ministers</h2>
+      <div class="speakers-grid">
+        <div class="speaker-card" *ngFor="let speaker of speakers">
+          <div class="speaker-image">
+            <img [src]="speaker.image" [alt]="speaker.name">
+          </div>
+          <div class="speaker-info">
+            <span class="speaker-title">{{ speaker.title }}</span>
+            <h3 class="speaker-name">{{ speaker.name }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Carousel Section -->
-  <div class="carousel">
-    <div class="carousel-track">
-      <div class="carousel-item" *ngFor="let img of images">
-        <img [src]="img.src" [alt]="img.name">
-        <div class="carousel-label" *ngIf="img.name">{{ img.name }}</div>
-      </div>
-      <div class="carousel-item" *ngFor="let img of images">
-        <img [src]="img.src" [alt]="img.name">
-        <div class="carousel-label" *ngIf="img.name">{{ img.name }}</div>
-      </div>
-    </div>
-  </div>
+<!--  <section class="carousel-section">-->
+<!--    <div class="carousel">-->
+<!--      <div class="carousel-track">-->
+<!--        <div class="carousel-item" *ngFor="let img of images">-->
+<!--          <img [src]="img.src" [alt]="img.name">-->
+<!--          <div class="carousel-label" *ngIf="img.name">{{ img.name }}</div>-->
+<!--        </div>-->
+<!--        <div class="carousel-item" *ngFor="let img of images">-->
+<!--          <img [src]="img.src" [alt]="img.name">-->
+<!--          <div class="carousel-label" *ngIf="img.name">{{ img.name }}</div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </section>-->
 
-  <div class="partner-with-us">
+  <!-- Partner Section -->
+  <section class="partner-with-us" id="partner">
     <h2>Partner With Us</h2>
-    <p>Be a part of what God is building. Through your partnership, lives will be touched, nations reached, and heaven gloried.</p>
+    <p>Be a part of what God is building. Through your partnership, lives will be touched, nations reached, and heaven glorified.</p>
 
     <div class="card">
       <div class="card-bg"></div>
@@ -65,10 +156,28 @@
         </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- Social Links -->
+  <section class="social-section">
+    <h2>Connect With Us</h2>
+    <div class="social-links">
+      <a href="https://www.facebook.com/AbrahamAdebayo" target="_blank" class="social-link">
+        <mat-icon>facebook</mat-icon>
+        <span>Abraham Adebayo</span>
+      </a>
+      <a href="https://www.youtube.com/@graceforall" target="_blank" class="social-link">
+        <mat-icon>play_circle</mat-icon>
+        <span>GraceForAll</span>
+      </a>
+    </div>
+  </section>
 
   <!-- Footer -->
-  <mat-toolbar class="footer">
-    <span>© 2025 Grace For All Men International Ministry. All Rights Reserved.</span>
-  </mat-toolbar>
+  <footer class="footer">
+    <div class="footer-content">
+      <img class="footer-logo" src="https://res.cloudinary.com/dcktnvdqt/image/upload/v1758059416/gfam-logo1_clydmw.png" alt="GFAM">
+      <p>&copy; 2026 Grace For All Men International Ministry. All Rights Reserved.</p>
+    </div>
+  </footer>
 </div>
