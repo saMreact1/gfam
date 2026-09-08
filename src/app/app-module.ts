@@ -20,6 +20,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatNavList } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { Attendees } from './pages/admin/components/attendees/attendees';
+import { AttendeeArchive } from './pages/admin/components/attendee-archive/attendee-archive';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { Layout } from './pages/admin/layout/layout';
@@ -46,6 +47,7 @@ import { InviteUser } from './pages/admin/components/invite-user/invite-user';
     Registration,
     OtpVerification,
     Attendees,
+    AttendeeArchive,
     Layout,
     Dashboard,
     Register,

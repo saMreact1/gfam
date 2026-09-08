@@ -6,6 +6,7 @@ import { OtpVerification } from './pages/otp-verification/otp-verification';
 import { Layout } from './pages/admin/layout/layout';
 import { Dashboard } from './pages/admin/components/dashboard/dashboard';
 import { Attendees } from './pages/admin/components/attendees/attendees';
+import { AttendeeArchive } from './pages/admin/components/attendee-archive/attendee-archive';
 import { Register } from './pages/admin/components/register/register';
 import { CodeChecker } from './pages/admin/components/code-checker/code-checker';
 import { CheckIn } from './pages/admin/components/check-in/check-in';
@@ -26,6 +27,7 @@ const routes: Routes = [
     children: [
       { path: '', component: Dashboard },
       { path: 'attendees', component: Attendees },
+      { path: 'attendee-archive', component: AttendeeArchive },
       { path: 'register', component: Register },
       { path: 'checker', component: CodeChecker },
       { path: 'check-in', component: CheckIn },
