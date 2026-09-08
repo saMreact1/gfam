@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { LandingPage } from './pages/landing-page/landing-page';
 import { Registration } from './pages/registration/registration';
+import { OtpVerification } from './pages/otp-verification/otp-verification';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,12 +26,14 @@ import { Layout } from './pages/admin/layout/layout';
 import { Dashboard } from './pages/admin/components/dashboard/dashboard';
 import { Register } from './pages/admin/components/register/register';
 import { CodeChecker } from './pages/admin/components/code-checker/code-checker';
+import { CheckIn } from './pages/admin/components/check-in/check-in';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AdminLogin } from './pages/admin/auth/login/login';
 import { ForgotPassword } from './pages/admin/auth/forgot-password/forgot-password';
 import { InviteUser } from './pages/admin/components/invite-user/invite-user';
@@ -41,11 +44,13 @@ import { InviteUser } from './pages/admin/components/invite-user/invite-user';
     App,
     LandingPage,
     Registration,
+    OtpVerification,
     Attendees,
     Layout,
     Dashboard,
     Register,
     CodeChecker,
+    CheckIn,
     AdminLogin,
     ForgotPassword,
     InviteUser,
@@ -74,7 +79,8 @@ import { InviteUser } from './pages/admin/components/invite-user/invite-user';
     MatMenuModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

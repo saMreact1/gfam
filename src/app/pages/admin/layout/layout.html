@@ -31,6 +31,10 @@
                 <mat-icon>qr_code_scanner</mat-icon>
                 <span>Verify Attendee</span>
             </a>
+            <a mat-list-item routerLink="/admin/check-in" routerLinkActive="active" (click)="onNavClick()">
+                <mat-icon>how_to_reg</mat-icon>
+                <span>Check In</span>
+            </a>
             <a mat-list-item routerLink="/admin/users" routerLinkActive="active" (click)="onNavClick()" *ngIf="isAdmin">
                 <mat-icon>people</mat-icon>
                 <span>Users</span>

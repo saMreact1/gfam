@@ -1,0 +1,156 @@
+<div class="check-in-page">
+  <section class="check-in-shell">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Admin Check-In</p>
+        <h1>Scan Registration</h1>
+      </div>
+
+      <div class="event-pill">
+        <mat-icon>event_available</mat-icon>
+        <span>Event {{ eventId }}</span>
+      </div>
+    </header>
+
+    <div class="check-in-grid">
+      <section class="scanner-panel">
+        <div class="camera-frame" [class.active]="isCameraActive">
+          <video
+            #cameraPreview
+            muted
+            playsinline
+            aria-label="Camera preview"
+            [class.hidden]="!isCameraActive"
+          ></video>
+
+          <div *ngIf="!isCameraActive" class="camera-placeholder">
+            <mat-icon>qr_code_scanner</mat-icon>
+            <span>{{ scannerSupported ? 'Camera Ready' : 'Manual Entry Available' }}</span>
+          </div>
+
+          <div *ngIf="isCameraActive" class="scan-target" aria-hidden="true"></div>
+        </div>
+
+        <p *ngIf="cameraError" class="camera-error">{{ cameraError }}</p>
+
+        <div class="scanner-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="startCamera()"
+            [disabled]="isCameraActive || isLoading || !scannerSupported"
+          >
+            <mat-icon>photo_camera</mat-icon>
+            Start Camera
+          </button>
+
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="stopCamera()"
+            [disabled]="!isCameraActive"
+          >
+            <mat-icon>stop_circle</mat-icon>
+            Stop
+          </button>
+        </div>
+      </section>
+
+      <section class="manual-panel">
+        <form (ngSubmit)="submitManualCheckIn()">
+          <mat-form-field appearance="outline">
+            <mat-label>Registration Code</mat-label>
+            <input
+              matInput
+              [(ngModel)]="enteredCode"
+              name="registrationCode"
+              placeholder="GFAM001"
+              autocomplete="off"
+              [disabled]="isLoading"
+              required
+            />
+            <mat-icon matPrefix>confirmation_number</mat-icon>
+          </mat-form-field>
+
+          <div class="manual-actions">
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="isLoading || !enteredCode.trim()"
+            >
+              <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!isLoading">how_to_reg</mat-icon>
+              {{ isLoading ? 'Checking In...' : 'Check In' }}
+            </button>
+
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="clearAll()"
+              [disabled]="isLoading"
+            >
+              <mat-icon>clear</mat-icon>
+              Clear
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="scannedPayload && scannedPayload !== enteredCode" class="scan-payload">
+          <span>Scanned</span>
+          <strong>{{ scannedPayload }}</strong>
+        </div>
+      </section>
+    </div>
+
+    <section *ngIf="checkInState !== 'idle'" class="result" [ngClass]="checkInState">
+      <div class="result-heading">
+        <mat-icon>{{ resultIcon }}</mat-icon>
+        <div>
+          <h2>{{ resultTitle }}</h2>
+          <p>{{ resultMessage }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="attendee" class="attendee-summary">
+        <div class="summary-row primary">
+          <span>Name</span>
+          <strong>{{ attendee.fullName }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Code</span>
+          <strong class="code">{{ attendee.code }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Status</span>
+          <strong>{{ attendee.status }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Phone</span>
+          <strong>{{ attendee.phone }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Prayer Time</span>
+          <strong>{{ attendee.prayerTime || 'Not Assigned' }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Tag</span>
+          <strong class="tag" [ngClass]="tagClass">{{ attendee.tagToIssue || 'Not Assigned' }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Accommodation</span>
+          <strong>{{ attendee.accommodationType || 'Not Assigned' }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Coordinator</span>
+          <strong>{{ attendee.coordinatorName || 'Not Assigned' }}</strong>
+        </div>
+        <div class="summary-row" *ngIf="attendee.verifiedAt">
+          <span>Checked At</span>
+          <strong>{{ attendee.verifiedAt | date:'medium' }}</strong>
+        </div>
+      </div>
+    </section>
+  </section>
+</div>
