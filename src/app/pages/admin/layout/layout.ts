@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { AdminAuthService } from '../../../core/services/admin-auth.service';
 
 @Component({
   selector: 'app-layout',
@@ -14,7 +15,10 @@ export class Layout {
   userName: string = '';
   userEmail: string = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AdminAuthService
+  ) {}
 
   ngOnInit() {
     this.checkScreenSize();
@@ -44,7 +48,7 @@ export class Layout {
   }
 
   logout() {
-    localStorage.clear();
+    this.authService.clearSession();
     this.router.navigate(['/admin/login']);
   }
 }

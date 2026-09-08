@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { EventService } from './event.service';
 
 export interface DashboardStatsResponse {
   totalRegistered: number;
@@ -22,9 +24,11 @@ export interface ApiResponse<T> {
 })
 export class DashboardService {
   private api = 'https://api.graceforallmenministry.org/api/v1';
-  private eventId = 1; // Current event ID
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private eventService: EventService
+  ) { }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('adminToken');
@@ -37,17 +41,11 @@ export class DashboardService {
   }
 
   getDashboardStats(): Observable<ApiResponse<DashboardStatsResponse>> {
-    const url = `${this.api}/dashboard/stats/${this.eventId}`;
-    console.log('📊 Fetching dashboard stats from:', url);
-    console.log('📋 Headers:', this.getHeaders());
-    return this.http.get<ApiResponse<DashboardStatsResponse>>(
-      url,
-      { headers: this.getHeaders() }
+    return this.eventService.getCurrentEvent().pipe(
+      switchMap(event => this.http.get<ApiResponse<DashboardStatsResponse>>(
+        `${this.api}/dashboard/stats/${event.eventId}`,
+        { headers: this.getHeaders() }
+      ))
     );
   }
-
-  getEventId(): number {
-    return this.eventId;
-  }
 }
-

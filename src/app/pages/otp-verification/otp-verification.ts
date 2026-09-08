@@ -89,9 +89,17 @@ export class OtpVerification implements OnInit, OnDestroy {
 
     this.reg.verifyOtp(this.email, otpCode).subscribe({
       next: (response) => {
-        if (response.responseCode === '00') {
-          // OTP verified successfully, proceed with registration
-          this.proceedWithRegistration();
+        if (response.success && response.data) {
+          this.isVerifying = false;
+          this.dialog.open(SuccessDialog, {
+            width: '500px',
+            disableClose: true,
+            data: {
+              responseCode: response.responseCode,
+              message: response.message,
+              data: response.data
+            }
+          });
         } else {
           this.isVerifying = false;
           this.snack.open(response.message || 'Invalid OTP. Please try again.', 'Close', { duration: 3000 });
@@ -100,37 +108,6 @@ export class OtpVerification implements OnInit, OnDestroy {
       error: (err) => {
         this.isVerifying = false;
         this.snack.open('OTP verification failed. Please try again.', 'Close', { duration: 3000 });
-      }
-    });
-  }
-
-  proceedWithRegistration() {
-    this.reg.register(this.registrationData).subscribe({
-      next: (res) => {
-        this.isVerifying = false;
-        // Open success dialog with proper message and icon
-        this.dialog.open(SuccessDialog, {
-          width: '500px',
-          disableClose: true,
-          data: {
-            responseCode: res.responseCode,
-            message: res.message,
-            data: res.data
-          }
-        });
-      },
-      error: (err) => {
-        this.isVerifying = false;
-        // Use generic error message without exposing server details
-        this.dialog.open(SuccessDialog, {
-          width: '500px',
-          disableClose: true,
-          data: {
-            responseCode: 'REGISTRATION_FAILED',
-            message: 'Registration failed. Please check your information and try again.',
-            data: null
-          }
-        });
       }
     });
   }

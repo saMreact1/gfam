@@ -42,7 +42,6 @@ export class Attendees implements OnDestroy {
   statusFilter: string = 'all';
   searchQuery: string = '';
   isLoading = false;
-  eventId = 1;
 
   // Pagination
   totalElements = 0;
@@ -183,7 +182,7 @@ export class Attendees implements OnDestroy {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `attendees-event-${this.eventId}.csv`;
+        a.download = 'current-attendees-2026.csv';
         a.click();
         window.URL.revokeObjectURL(url);
         this.snack.open('Attendees list downloaded successfully!', 'Close', { duration: 3000 });

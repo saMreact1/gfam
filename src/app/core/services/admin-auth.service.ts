@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 export interface LoginRequest {
   email: string;
@@ -9,6 +9,11 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
+  refreshToken?: string;
+  tokenType?: string;
+  expiresIn?: number;
+  accessTokenExpiresAt?: string;
+  refreshTokenExpiresAt?: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -69,18 +74,38 @@ export interface UserResponse {
 })
 export class AdminAuthService {
   private api = 'https://api.graceforallmenministry.org/api/v1';
+  private readonly tokenKey = 'adminToken';
+  private readonly refreshTokenKey = 'adminRefreshToken';
+  private readonly userKey = 'adminUser';
 
   constructor(private http: HttpClient) { }
 
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('adminToken');
+    const token = this.getToken();
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
   }
 
   login(data: LoginRequest): Observable<ApiResponse<LoginResponse>> {
-    return this.http.post<ApiResponse<LoginResponse>>(`${this.api}/auth/login`, data);
+    return this.http.post<ApiResponse<LoginResponse>>(`${this.api}/auth/login`, data).pipe(
+      tap(response => {
+        if (response.responseCode === '00' && response.data) {
+          this.setSession(response.data);
+        }
+      })
+    );
+  }
+
+  refreshAccessToken(): Observable<ApiResponse<LoginResponse>> {
+    const refreshToken = this.getRefreshToken();
+    return this.http.post<ApiResponse<LoginResponse>>(`${this.api}/auth/refresh`, { refreshToken }).pipe(
+      tap(response => {
+        if (response.responseCode === '00' && response.data) {
+          this.setSession(response.data);
+        }
+      })
+    );
   }
 
   forgotPassword(data: ForgotPasswordRequest): Observable<ApiResponse<ForgotPasswordResponse>> {
@@ -125,30 +150,49 @@ export class AdminAuthService {
   }
 
   logout(): void {
-    // Clear local storage or session storage
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
+    this.clearSession();
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('adminToken');
+    return !!this.getToken();
   }
 
   getToken(): string | null {
-    return localStorage.getItem('adminToken');
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.refreshTokenKey);
   }
 
   setToken(token: string): void {
-    localStorage.setItem('adminToken', token);
+    localStorage.setItem(this.tokenKey, token);
+  }
+
+  setRefreshToken(refreshToken: string): void {
+    localStorage.setItem(this.refreshTokenKey, refreshToken);
   }
 
   setUser(user: LoginResponse): void {
-    localStorage.setItem('adminUser', JSON.stringify(user));
+    localStorage.setItem(this.userKey, JSON.stringify(user));
   }
 
   getUser(): LoginResponse | null {
-    const user = localStorage.getItem('adminUser');
+    const user = localStorage.getItem(this.userKey);
     return user ? JSON.parse(user) : null;
   }
-}
 
+  setSession(auth: LoginResponse): void {
+    this.setToken(auth.token);
+    if (auth.refreshToken) {
+      this.setRefreshToken(auth.refreshToken);
+    }
+    this.setUser(auth);
+  }
+
+  clearSession(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.refreshTokenKey);
+    localStorage.removeItem(this.userKey);
+  }
+}

@@ -78,7 +78,6 @@ export interface ApiResponse<T> {
 })
 export class AttendeeService {
   private api = 'https://api.graceforallmenministry.org/api/v1';
-  private eventId = 1; // Current event ID
 
   constructor(private http: HttpClient) { }
 
@@ -176,9 +175,5 @@ export class AttendeeService {
         'Authorization': `Bearer ${token}`
       })
     });
-  }
-
-  getEventId(): number {
-    return this.eventId;
   }
 }

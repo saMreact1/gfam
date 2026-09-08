@@ -11,7 +11,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class Dashboard implements OnInit {
   isLoading = false;
-  eventId = 1;
 
   // Stats
   totalRegistered = 0;

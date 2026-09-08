@@ -14,6 +14,8 @@ import { SuccessDialog } from '../../../registration/components/success-dialog';
 export class Register implements OnInit {
   registrationForm: FormGroup;
   isLoading = false;
+  isEventLoading = true;
+  currentEventId: number | null = null;
 
   roles: string[] = ['Minister', 'Pastor', 'Prophet', 'Evangelist', 'Apostle', 'Member'];
   states: any[] = [];
@@ -25,7 +27,7 @@ export class Register implements OnInit {
     private registerService: RegisterService
   ) {
     this.registrationForm = this.fb.group({
-      eventId: [1],
+      eventId: [null, Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -62,12 +64,19 @@ export class Register implements OnInit {
   }
 
   ngOnInit() {
+    this.loadCurrentEvent();
+
     this.registerService.getStates().subscribe((res: any) => {
       this.states = res.data;
     });
   }
 
   onSubmit() {
+    if (this.isEventLoading || !this.currentEventId) {
+      this.snack.open('Event is still loading. Please try again in a moment.', 'Close', { duration: 3000 });
+      return;
+    }
+
     if (this.registrationForm.invalid) {
       this.snack.open('Please fill all required fields correctly', 'Close', { duration: 3000 });
       return;
@@ -109,7 +118,7 @@ export class Register implements OnInit {
         // Reset form only on successful registration (not for already registered)
         if (responseCode === 'REGISTRATION_SUCCESSFUL' || responseCode === 'REGISTRATION_VIRTUAL') {
           this.registrationForm.reset({
-            eventId: 1,
+            eventId: this.currentEventId,
             checkInDate: new Date()
           });
         }
@@ -126,6 +135,22 @@ export class Register implements OnInit {
             data: null
           }
         });
+      }
+    });
+  }
+
+  private loadCurrentEvent(): void {
+    this.isEventLoading = true;
+
+    this.registerService.getCurrentEvent().subscribe({
+      next: (event) => {
+        this.currentEventId = event.eventId;
+        this.registrationForm.patchValue({ eventId: event.eventId });
+        this.isEventLoading = false;
+      },
+      error: () => {
+        this.isEventLoading = false;
+        this.snack.open('Unable to load the 2026 event. Please refresh and try again.', 'Close', { duration: 4000 });
       }
     });
   }

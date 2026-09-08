@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { EventRegistrationPageResponse, EventService } from './event.service';
 
 export interface CheckInRequest {
   barcode?: string;
@@ -38,9 +40,12 @@ export interface ApiResponse<T> {
 })
 export class CheckInService {
   private api = 'https://api.graceforallmenministry.org/api/v1';
-  private eventId = 1;
+  private currentEvent?: EventRegistrationPageResponse;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private eventService: EventService
+  ) { }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('adminToken');
@@ -50,14 +55,26 @@ export class CheckInService {
   }
 
   scanRegistration(payload: CheckInRequest): Observable<ApiResponse<CheckInResponse>> {
-    return this.http.post<ApiResponse<CheckInResponse>>(
-      `${this.api}/admin/events/${this.eventId}/check-ins/scan`,
-      payload,
-      { headers: this.getHeaders() }
+    return this.getCurrentEvent().pipe(
+      switchMap(event => this.http.post<ApiResponse<CheckInResponse>>(
+        `${this.api}/admin/events/${event.eventId}/check-ins/scan`,
+        payload,
+        { headers: this.getHeaders() }
+      ))
     );
   }
 
-  getEventId(): number {
-    return this.eventId;
+  getCurrentEvent(): Observable<EventRegistrationPageResponse> {
+    return this.eventService.getCurrentEvent().pipe(
+      tap(event => this.currentEvent = event)
+    );
+  }
+
+  getEventId(): number | null {
+    return this.currentEvent?.eventId ?? null;
+  }
+
+  getEventName(): string {
+    return this.currentEvent?.eventName ?? '72 Hours Registration 2026';
   }
 }

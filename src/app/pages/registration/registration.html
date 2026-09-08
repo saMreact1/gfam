@@ -30,6 +30,7 @@
       <div class="form-header">
         <h2>Attendee Registration</h2>
         <p>Fill in your details to register for The Harvest 2026</p>
+        <p *ngIf="eventError" class="error-message">{{ eventError }}</p>
       </div>
 
       <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
@@ -178,11 +179,11 @@
             mat-raised-button
             color="primary"
             type="submit"
-            [disabled]="registrationForm.invalid"
+            [disabled]="registrationForm.invalid || isEventLoading"
             class="submit-btn"
           >
             <mat-icon>send</mat-icon>
-            Submit Registration
+            {{ isEventLoading ? 'Loading Event...' : 'Submit Registration' }}
           </button>
         </div>
 

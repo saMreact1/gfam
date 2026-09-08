@@ -8,9 +8,11 @@
 
       <div class="event-pill">
         <mat-icon>event_available</mat-icon>
-        <span>Event {{ eventId }}</span>
+        <span>{{ eventName }}</span>
       </div>
     </header>
+
+    <p *ngIf="eventError" class="camera-error">{{ eventError }}</p>
 
     <div class="check-in-grid">
       <section class="scanner-panel">
@@ -39,10 +41,10 @@
             color="primary"
             type="button"
             (click)="startCamera()"
-            [disabled]="isCameraActive || isLoading || !scannerSupported"
+            [disabled]="isCameraActive || isLoading || isEventLoading || !scannerSupported"
           >
             <mat-icon>photo_camera</mat-icon>
-            Start Camera
+            {{ isEventLoading ? 'Loading Event...' : 'Start Camera' }}
           </button>
 
           <button
@@ -78,7 +80,7 @@
               mat-flat-button
               color="primary"
               type="submit"
-              [disabled]="isLoading || !enteredCode.trim()"
+              [disabled]="isLoading || isEventLoading || !enteredCode.trim()"
             >
               <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
               <mat-icon *ngIf="!isLoading">how_to_reg</mat-icon>

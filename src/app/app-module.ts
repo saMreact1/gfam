@@ -30,7 +30,7 @@ import { CodeChecker } from './pages/admin/components/code-checker/code-checker'
 import { CheckIn } from './pages/admin/components/check-in/check-in';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -38,7 +38,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AdminLogin } from './pages/admin/auth/login/login';
 import { ForgotPassword } from './pages/admin/auth/forgot-password/forgot-password';
 import { InviteUser } from './pages/admin/components/invite-user/invite-user';
-// import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -59,7 +59,6 @@ import { InviteUser } from './pages/admin/components/invite-user/invite-user';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
@@ -86,7 +85,7 @@ import { InviteUser } from './pages/admin/components/invite-user/invite-user';
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
-    // provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor])),
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ],
   bootstrap: [App]

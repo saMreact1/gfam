@@ -37,6 +37,8 @@ export interface RegistrationResponse {
 export class Registration implements OnInit {
   registrationForm: FormGroup;
   roles: string[] = ['Minister', 'Pastor', 'Prophet', 'Evangelist', 'Apostle', 'Member'];
+  isEventLoading = true;
+  eventError = '';
 
   states: any[] = [];
 
@@ -47,7 +49,7 @@ export class Registration implements OnInit {
     private reg: Register
   ) {
     this.registrationForm = this.fb.group({
-      eventId: 1,
+      eventId: [null, Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -85,6 +87,8 @@ export class Registration implements OnInit {
   }
 
   ngOnInit() {
+    this.loadCurrentEvent();
+
     this.reg.getStates().subscribe((res: any) => {
       this.states = res.data;
       console.log(this.states);
@@ -94,6 +98,11 @@ export class Registration implements OnInit {
   isLoading = false;
 
   onSubmit() {
+    if (this.isEventLoading || !this.registrationForm.get('eventId')?.value) {
+      this.snack.open('Event is still loading. Please try again in a moment.', 'Close', { duration: 3000 });
+      return;
+    }
+
     if (this.registrationForm.invalid) {
       this.snack.open('Please fill all required fields correctly', 'Close', { duration: 3000 });
       return;
@@ -116,6 +125,23 @@ export class Registration implements OnInit {
       state: {
         email: raw.email,
         registrationData: payload
+      }
+    });
+  }
+
+  private loadCurrentEvent(): void {
+    this.isEventLoading = true;
+    this.eventError = '';
+
+    this.reg.getCurrentEvent().subscribe({
+      next: (event) => {
+        this.registrationForm.patchValue({ eventId: event.eventId });
+        this.isEventLoading = false;
+      },
+      error: () => {
+        this.isEventLoading = false;
+        this.eventError = 'Unable to load the 2026 event. Please refresh and try again.';
+        this.snack.open(this.eventError, 'Close', { duration: 4000 });
       }
     });
   }

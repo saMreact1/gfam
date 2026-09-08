@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CheckInResponse, CheckInService } from '../../../../core/services/check-in.service';
 
@@ -23,7 +23,7 @@ interface BrowserBarcodeDetectorConstructor {
   templateUrl: './check-in.html',
   styleUrl: './check-in.scss'
 })
-export class CheckIn implements OnDestroy {
+export class CheckIn implements OnInit, OnDestroy {
   @ViewChild('cameraPreview') cameraPreview?: ElementRef<HTMLVideoElement>;
 
   enteredCode = '';
@@ -34,8 +34,11 @@ export class CheckIn implements OnDestroy {
   isLoading = false;
   isCameraActive = false;
   cameraError = '';
+  eventError = '';
+  isEventLoading = true;
   scannerSupported = this.hasBarcodeDetector();
-  eventId = 1;
+  eventId: number | null = null;
+  eventName = '72 Hours Registration 2026';
 
   private mediaStream: MediaStream | null = null;
   private barcodeDetector: BrowserBarcodeDetector | null = null;
@@ -46,8 +49,10 @@ export class CheckIn implements OnDestroy {
     private checkInService: CheckInService,
     private snack: MatSnackBar,
     private zone: NgZone
-  ) {
-    this.eventId = this.checkInService.getEventId();
+  ) {}
+
+  ngOnInit(): void {
+    this.loadEventContext();
   }
 
   async startCamera(): Promise<void> {
@@ -282,6 +287,23 @@ export class CheckIn implements OnDestroy {
     this.attendee = null;
     this.checkInState = 'idle';
     this.feedbackMessage = '';
+  }
+
+  private loadEventContext(): void {
+    this.isEventLoading = true;
+    this.eventError = '';
+
+    this.checkInService.getCurrentEvent().subscribe({
+      next: (event) => {
+        this.eventId = event.eventId;
+        this.eventName = event.eventName || this.eventName;
+        this.isEventLoading = false;
+      },
+      error: () => {
+        this.isEventLoading = false;
+        this.eventError = 'Unable to load the 2026 event. Check your connection and try again.';
+      }
+    });
   }
 
   private extractRegistrationCode(payload: string): string {
