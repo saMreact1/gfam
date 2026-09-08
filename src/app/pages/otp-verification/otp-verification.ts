@@ -42,6 +42,7 @@ export class OtpVerification implements OnInit, OnDestroy {
     if (navigation?.extras.state) {
       this.email = navigation.extras.state['email'];
       this.registrationData = navigation.extras.state['registrationData'];
+      this.expiresInMinutes = navigation.extras.state['expiresInMinutes'] || 10;
     }
   }
 
@@ -52,8 +53,7 @@ export class OtpVerification implements OnInit, OnDestroy {
       return;
     }
 
-    // Send OTP automatically when component loads
-    this.sendOtp();
+    this.startCountdown();
   }
 
   ngOnDestroy() {

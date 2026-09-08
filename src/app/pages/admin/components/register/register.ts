@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
 import { Register as RegisterService } from '../../../../core/services/register';
-import { SuccessDialog } from '../../../registration/components/success-dialog';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +21,6 @@ export class Register implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snack: MatSnackBar,
-    private dialog: MatDialog,
     private registerService: RegisterService
   ) {
     this.registrationForm = this.fb.group({
@@ -96,45 +93,21 @@ export class Register implements OnInit {
       volunteerAsHouseCaptain: raw.attendance === 'Yes' ? raw.volunteerHostelCaptain : false,
     };
 
-    // Call registration endpoint directly
-    this.registerService.register(payload).subscribe({
+    this.registerService.sendOtp(payload).subscribe({
       next: (response) => {
         this.isLoading = false;
-
-        // Use the responseCode directly from the API
-        const responseCode = response.responseCode || response.data?.responseCode;
-
-        // Open success dialog for all cases (success, already registered, or failure)
-        this.dialog.open(SuccessDialog, {
-          width: '500px',
-          disableClose: true,
-          data: {
-            responseCode: responseCode,
-            message: response.message,
-            data: response.data
-          }
+        this.snack.open(response.message || 'OTP sent to attendee email', 'Close', { duration: 4000 });
+        this.registrationForm.reset({
+          eventId: this.currentEventId,
+          checkInDate: new Date(),
+          pregnantOrNursingTrue: false,
+          nursing: '',
+          volunteerHostelCaptain: false
         });
-
-        // Reset form only on successful registration (not for already registered)
-        if (responseCode === 'REGISTRATION_SUCCESSFUL' || responseCode === 'REGISTRATION_VIRTUAL') {
-          this.registrationForm.reset({
-            eventId: this.currentEventId,
-            checkInDate: new Date()
-          });
-        }
       },
-      error: (err) => {
+      error: () => {
         this.isLoading = false;
-        // Show error dialog for network/server errors
-        this.dialog.open(SuccessDialog, {
-          width: '500px',
-          disableClose: true,
-          data: {
-            responseCode: 'REGISTRATION_FAILED',
-            message: err.error?.message || 'Registration failed. Please try again.',
-            data: null
-          }
-        });
+        this.snack.open('Failed to send OTP. Please try again.', 'Close', { duration: 3000 });
       }
     });
   }

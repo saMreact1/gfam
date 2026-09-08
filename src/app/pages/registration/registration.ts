@@ -122,10 +122,22 @@ export class Registration implements OnInit {
       volunteerAsHouseCaptain: raw.attendance === 'Yes' ? raw.volunteerHostelCaptain : false,
     };
 
-    this.router.navigate(['/otp-verification'], {
-      state: {
-        email: raw.email,
-        registrationData: payload
+    this.isLoading = true;
+    this.reg.sendOtp(payload).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.router.navigate(['/otp-verification'], {
+          state: {
+            email: raw.email,
+            registrationData: payload,
+            expiresInMinutes: response.expiresInMinutes,
+            message: response.message
+          }
+        });
+      },
+      error: () => {
+        this.isLoading = false;
+        this.snack.open('Failed to send OTP. Please try again.', 'Close', { duration: 3000 });
       }
     });
   }

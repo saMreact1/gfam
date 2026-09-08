@@ -126,8 +126,8 @@
           [disabled]="registrationForm.invalid || isLoading || isEventLoading"
         >
           <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
-          <span *ngIf="!isLoading">Submit Registration</span>
-          <span *ngIf="isLoading">Registering...</span>
+          <span *ngIf="!isLoading">{{ isEventLoading ? 'Loading Event...' : 'Send OTP' }}</span>
+          <span *ngIf="isLoading">Sending OTP...</span>
         </button>
       </div>
 

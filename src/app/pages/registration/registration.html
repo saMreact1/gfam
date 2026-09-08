@@ -179,11 +179,11 @@
             mat-raised-button
             color="primary"
             type="submit"
-            [disabled]="registrationForm.invalid || isEventLoading"
+            [disabled]="registrationForm.invalid || isEventLoading || isLoading"
             class="submit-btn"
           >
             <mat-icon>send</mat-icon>
-            {{ isEventLoading ? 'Loading Event...' : 'Submit Registration' }}
+            {{ isLoading ? 'Sending OTP...' : (isEventLoading ? 'Loading Event...' : 'Submit Registration') }}
           </button>
         </div>
 
