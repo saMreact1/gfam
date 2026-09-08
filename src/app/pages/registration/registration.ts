@@ -24,6 +24,7 @@ export interface RegistrationResponse {
     checkInDate: string | null;
     accommodationType: string;
     createdAt?: string;
+    barcodeImage?: string;
     responseCode?: string;
   }
 }

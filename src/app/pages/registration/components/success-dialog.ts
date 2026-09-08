@@ -28,6 +28,10 @@ export interface SuccessDialogData {
 
         <!-- Show registration details for successful physical registration -->
         <div *ngIf="data.responseCode === 'REGISTRATION_SUCCESSFUL' && data.data" class="registration-details">
+          <div class="barcode-preview" *ngIf="data.data.barcodeImage">
+            <img [src]="data.data.barcodeImage" alt="Registration QR code" />
+            <span>Scan at check-in</span>
+          </div>
           <div class="detail-item">
             <strong>Registration Code:</strong> {{ data.data.code }}
           </div>
@@ -53,6 +57,10 @@ export interface SuccessDialogData {
 
         <!-- Show registration details for already registered users -->
         <div *ngIf="data.responseCode === 'ALREADY_REGISTERED' && data.data" class="registration-details">
+          <div class="barcode-preview" *ngIf="data.data.barcodeImage">
+            <img [src]="data.data.barcodeImage" alt="Registration QR code" />
+            <span>Scan at check-in</span>
+          </div>
           <div class="detail-item">
             <strong>Registration Code:</strong> {{ data.data.code }}
           </div>
@@ -156,6 +164,27 @@ export interface SuccessDialogData {
       padding: 1rem;
       margin-top: 1rem;
       text-align: left;
+    }
+
+    .barcode-preview {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .barcode-preview img {
+      width: 180px;
+      height: 180px;
+      border: 1px solid #dde7e4;
+      border-radius: 8px;
+      padding: 8px;
+      background: #fff;
+    }
+
+    .barcode-preview span {
+      display: block;
+      margin-top: 0.35rem;
+      color: #667;
+      font-size: 0.85rem;
     }
 
     .detail-item {
