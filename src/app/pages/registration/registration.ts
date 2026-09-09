@@ -126,6 +126,11 @@ export class Registration implements OnInit {
     this.reg.sendOtp(payload).subscribe({
       next: (response) => {
         this.isLoading = false;
+        if (response.responseCode === 'ALREADY_REGISTERED') {
+          this.snack.open(response.message || 'You are already registered. Your details have been sent to your email.', 'Close', { duration: 5000 });
+          return;
+        }
+
         this.router.navigate(['/otp-verification'], {
           state: {
             email: raw.email,
