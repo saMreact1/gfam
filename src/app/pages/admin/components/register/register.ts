@@ -96,6 +96,16 @@ export class Register implements OnInit {
     this.registerService.sendOtp(payload).subscribe({
       next: (response) => {
         this.isLoading = false;
+        if (response.responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
+          this.snack.open(response.message || 'Registration could not continue. Please check the attendee details.', 'Close', { duration: 5000 });
+          return;
+        }
+
+        if (!this.canResetAfterResponse(response.responseCode)) {
+          this.snack.open(response.message || 'Registration could not continue. Please try again.', 'Close', { duration: 5000 });
+          return;
+        }
+
         this.snack.open(response.message || 'OTP sent to attendee email', 'Close', { duration: 4000 });
         this.registrationForm.reset({
           eventId: this.currentEventId,
@@ -111,6 +121,10 @@ export class Register implements OnInit {
         this.snack.open(message, 'Close', { duration: 5000 });
       }
     });
+  }
+
+  private canResetAfterResponse(responseCode: string): boolean {
+    return responseCode === 'OTP_SENT' || responseCode === 'OTP_ALREADY_SENT' || responseCode === 'ALREADY_REGISTERED';
   }
 
   private loadCurrentEvent(): void {

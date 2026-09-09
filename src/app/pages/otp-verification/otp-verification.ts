@@ -68,6 +68,12 @@ export class OtpVerification implements OnInit, OnDestroy {
     this.reg.sendOtp(this.registrationData).subscribe({
       next: (response) => {
         this.isLoading = false;
+        if (response.responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
+          this.snack.open(response.message || 'Registration could not continue. Please check your details.', 'Close', { duration: 5000 });
+          this.router.navigate(['/register']);
+          return;
+        }
+
         this.expiresInMinutes = response.expiresInMinutes;
         this.snack.open(`OTP sent to ${this.email}`, 'Close', { duration: 3000 });
 
@@ -76,7 +82,7 @@ export class OtpVerification implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open('Failed to send OTP. Please try again.', 'Close', { duration: 3000 });
+        this.snack.open(err?.error?.message || 'Failed to send OTP. Please try again.', 'Close', { duration: 5000 });
       }
     });
   }

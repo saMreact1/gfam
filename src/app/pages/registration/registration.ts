@@ -126,8 +126,13 @@ export class Registration implements OnInit {
     this.reg.sendOtp(payload).subscribe({
       next: (response) => {
         this.isLoading = false;
-        if (response.responseCode === 'ALREADY_REGISTERED') {
+        if (response.responseCode === 'ALREADY_REGISTERED' || response.responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
           this.snack.open(response.message || 'You are already registered. Your details have been sent to your email.', 'Close', { duration: 5000 });
+          return;
+        }
+
+        if (!this.canProceedToOtp(response.responseCode)) {
+          this.snack.open(response.message || 'Registration could not continue. Please try again.', 'Close', { duration: 5000 });
           return;
         }
 
@@ -146,6 +151,10 @@ export class Registration implements OnInit {
         this.snack.open(message, 'Close', { duration: 5000 });
       }
     });
+  }
+
+  private canProceedToOtp(responseCode: string): boolean {
+    return responseCode === 'OTP_SENT' || responseCode === 'OTP_ALREADY_SENT' || responseCode === 'OTP_RESENT';
   }
 
   private loadCurrentEvent(): void {

@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { RegistrationResponse } from '../../pages/registration/registration';
 import { EventRegistrationPageResponse, EventService } from './event.service';
 
@@ -18,6 +18,7 @@ export interface VerifyOtpResponse {
 }
 
 interface ApiResponse<T> {
+  success: boolean;
   data: T;
   message: string;
   responseCode: string;
@@ -51,7 +52,19 @@ export class Register {
 
   sendOtp(registrationData: any): Observable<OtpResponse> {
     return this.http.post<ApiResponse<OtpResponse>>(`${this.api}/registrations/send-otp`, registrationData).pipe(
-      map(response => response.data)
+      map(response => this.toOtpResponse(response, registrationData.email)),
+      catchError((error: HttpErrorResponse) => {
+        const body = error.error;
+        if (body?.responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
+          return of({
+            message: body.message,
+            email: registrationData.email,
+            responseCode: body.responseCode,
+            expiresInMinutes: 0
+          });
+        }
+        return throwError(() => error);
+      })
     );
   }
 
@@ -71,5 +84,18 @@ export class Register {
 
   getCurrentEvent(): Observable<EventRegistrationPageResponse> {
     return this.eventService.getCurrentEvent();
+  }
+
+  private toOtpResponse(response: ApiResponse<OtpResponse>, fallbackEmail: string): OtpResponse {
+    if (response.data) {
+      return response.data;
+    }
+
+    return {
+      message: response.message,
+      email: fallbackEmail,
+      responseCode: response.responseCode,
+      expiresInMinutes: 0
+    };
   }
 }
