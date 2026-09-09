@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Register as RegisterService } from '../../../../core/services/register';
+import { SuccessDialog } from '../../../registration/components/success-dialog';
+import { OtpSendingDialog } from '../modals/otp-sending';
+import { OtpVerifyDialog } from '../modals/otp-verify';
 
 @Component({
   selector: 'app-register',
@@ -18,9 +22,13 @@ export class Register implements OnInit {
   roles: string[] = ['Minister', 'Pastor', 'Prophet', 'Evangelist', 'Apostle', 'Member'];
   states: any[] = [];
 
+  private pendingPayload: any = null;
+  private otpVerifyRef: MatDialogRef<OtpVerifyDialog> | null = null;
+
   constructor(
     private fb: FormBuilder,
     private snack: MatSnackBar,
+    private dialog: MatDialog,
     private registerService: RegisterService
   ) {
     this.registrationForm = this.fb.group({
@@ -82,7 +90,7 @@ export class Register implements OnInit {
     this.isLoading = true;
     const raw = this.registrationForm.value;
 
-    const payload = {
+    this.pendingPayload = {
       ...raw,
       gender: raw.gender.toUpperCase(),
       ministerRole: raw.ministerRole.toUpperCase(),
@@ -93,38 +101,113 @@ export class Register implements OnInit {
       volunteerAsHouseCaptain: raw.attendance === 'Yes' ? raw.volunteerHostelCaptain : false,
     };
 
-    this.registerService.sendOtp(payload).subscribe({
+    // Send OTP first
+    this.registerService.sendOtp(this.pendingPayload).subscribe({
       next: (response) => {
         this.isLoading = false;
-        if (response.responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
-          this.snack.open(response.message || 'Registration could not continue. Please check the attendee details.', 'Close', { duration: 5000 });
+        const responseCode = response.responseCode;
+
+        if (responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
+          this.snack.open(response.message || 'Identity conflict detected', 'Close', { duration: 4000 });
           return;
         }
 
-        if (!this.canResetAfterResponse(response.responseCode)) {
-          this.snack.open(response.message || 'Registration could not continue. Please try again.', 'Close', { duration: 5000 });
-          return;
-        }
-
-        this.snack.open(response.message || 'OTP sent to attendee email', 'Close', { duration: 4000 });
-        this.registrationForm.reset({
-          eventId: this.currentEventId,
-          checkInDate: new Date(),
-          pregnantOrNursingTrue: false,
-          nursing: '',
-          volunteerHostelCaptain: false
-        });
+        this.openOtpSendingDialog(this.pendingPayload.email);
       },
-      error: (error) => {
+      error: (err) => {
         this.isLoading = false;
-        const message = error?.error?.message || 'Failed to send OTP. Please try again.';
-        this.snack.open(message, 'Close', { duration: 5000 });
+        const message = err.error?.message || 'Failed to send OTP. Please try again.';
+        this.snack.open(message, 'Close', { duration: 4000 });
       }
     });
   }
 
-  private canResetAfterResponse(responseCode: string): boolean {
-    return responseCode === 'OTP_SENT' || responseCode === 'OTP_ALREADY_SENT' || responseCode === 'ALREADY_REGISTERED';
+  private openOtpSendingDialog(email: string) {
+    const sendingRef = this.dialog.open(OtpSendingDialog, {
+      width: '420px',
+      disableClose: true,
+      data: { email }
+    });
+
+    sendingRef.afterClosed().subscribe(result => {
+      if (result === 'proceed') {
+        this.openOtpVerifyDialog(email);
+      }
+    });
+  }
+
+  private openOtpVerifyDialog(email: string) {
+    this.otpVerifyRef = this.dialog.open(OtpVerifyDialog, {
+      width: '420px',
+      disableClose: true,
+      data: { email, expiresInMinutes: 5 }
+    });
+
+    this.otpVerifyRef.afterClosed().subscribe(result => {
+      if (!result) return;
+
+      if (result.action === 'verify') {
+        this.verifyOtp(email, result.otp);
+      } else if (result.action === 'resend') {
+        this.resendOtp(email);
+      }
+    });
+  }
+
+  private verifyOtp(email: string, otp: string) {
+    this.registerService.verifyOtp(email, otp).subscribe({
+      next: (response) => {
+        const responseCode = response.responseCode || response.data?.responseCode;
+
+        if (responseCode === 'OTP_VERIFICATION_SUCCESSFUL' || responseCode === 'REGISTRATION_SUCCESSFUL' || responseCode === 'REGISTRATION_VIRTUAL') {
+          if (this.otpVerifyRef) {
+            this.otpVerifyRef.close();
+          }
+
+          // Show success dialog with registration details
+          this.dialog.open(SuccessDialog, {
+            width: '500px',
+            disableClose: true,
+            data: {
+              responseCode: response.data?.responseCode || responseCode,
+              message: response.message,
+              data: response.data
+            }
+          });
+
+          this.registrationForm.reset({
+            eventId: this.currentEventId,
+            checkInDate: new Date()
+          });
+          this.pendingPayload = null;
+        } else {
+          if (this.otpVerifyRef) {
+            this.otpVerifyRef.componentInstance.setError(
+              response.message || 'Invalid OTP. Please try again.'
+            );
+          }
+        }
+      },
+      error: (err) => {
+        const message = err.error?.message || 'Verification failed. Please try again.';
+        if (this.otpVerifyRef) {
+          this.otpVerifyRef.componentInstance.setError(message);
+        }
+      }
+    });
+  }
+
+  private resendOtp(email: string) {
+    this.registerService.resendOtp(email).subscribe({
+      next: () => {
+        this.snack.open('OTP resent successfully', 'Close', { duration: 3000 });
+        this.openOtpVerifyDialog(email);
+      },
+      error: (err) => {
+        this.snack.open(err.error?.message || 'Failed to resend OTP', 'Close', { duration: 3000 });
+        this.openOtpVerifyDialog(email);
+      }
+    });
   }
 
   private loadCurrentEvent(): void {

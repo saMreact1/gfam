@@ -19,7 +19,7 @@ export class LandingPage implements OnInit, OnDestroy {
   countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
   speakers = [
-    { title: 'HOST', name: 'Prophet Abraham Adebayo', image: '../../../assets/images/Prophet_Ayo_Jeje.png' },
+    { title: 'HOST', name: 'Prophet Abraham Adebayo', image: '../../../assets/images/slide10.jpg' },
     { title: 'Reverend', name: 'Austin Ukporhe', image: '../../../assets/images/REV_AUSTIN.png' },
     { title: 'Prophet', name: 'Ayo Jeje', image: '../../../assets/images/Prophet_Ayo_Jeje.png' },
     { title: 'Evangelist', name: 'M.F Adeyemi', image: '../../../assets/images/Daddy_MF_Adeyemi.png' },
@@ -28,18 +28,6 @@ export class LandingPage implements OnInit, OnDestroy {
     { title: 'Prophet', name: 'Cherub Obadare', image: '../../../assets/images/Prophet_Cherub_Obadare.png' },
     { title: 'Apostle', name: 'Tolu Agboola', image: '../../../assets/images/Apostle_Tolu_Agboola.png' },
     { title: 'Pastor', name: 'Segun Michael', image: '../../../assets/images/Pst_Segun_Michael.png' },
-  ];
-
-  images = [
-    { src: '../../../assets/images/Apostle_Tolu_Agboola.png', name: 'Ap. Tolu Agboola' },
-    { src: '../../../assets/images/Baba_makin.png', name: 'Pastor Makin Olaosebikan' },
-    { src: '../../../assets/images/Daddy_MF_Adeyemi.png', name: 'Evang M.F. Adeyemi' },
-    { src: '../../../assets/images/Prophet_Ayo_Jeje.png', name: 'Pro. Ayo Jeje' },
-    { src: '../../../assets/images/Prophet_Cherub_Obadare.png', name: 'Pro. Cherub Obadare' },
-    { src: '../../../assets/images/Prophet_Jesse_Jangfa.png', name: 'Pro. Jesse Jangfa' },
-    { src: '../../../assets/images/Pst_Segun_Michael.png', name: 'Pst. Segun Michael' },
-    { src: '../../../assets/images/Pst_Sola_Ajewole.png', name: 'Pst. Sola Ajewole' },
-    { src: '../../../assets/images/REV_AUSTIN.png', name: 'Rev. Austin Ukporhe' },
   ];
 
   ngOnInit(): void {

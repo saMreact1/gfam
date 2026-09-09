@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Register } from '../../core/services/register';
+import { AlertDialog, AlertDialogType } from './components/alert-dialog';
 
 export interface RegistrationResponse {
   success: boolean;
@@ -45,7 +46,7 @@ export class Registration implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private snack: MatSnackBar,
+    private dialog: MatDialog,
     private router: Router,
     private reg: Register
   ) {
@@ -100,12 +101,12 @@ export class Registration implements OnInit {
 
   onSubmit() {
     if (this.isEventLoading || !this.registrationForm.get('eventId')?.value) {
-      this.snack.open('Event is still loading. Please try again in a moment.', 'Close', { duration: 3000 });
+      this.openAlert('warning', 'Event is still loading. Please try again in a moment.');
       return;
     }
 
     if (this.registrationForm.invalid) {
-      this.snack.open('Please fill all required fields correctly', 'Close', { duration: 3000 });
+      this.openAlert('warning', 'Please fill all required fields correctly');
       return;
     }
 
@@ -127,12 +128,12 @@ export class Registration implements OnInit {
       next: (response) => {
         this.isLoading = false;
         if (response.responseCode === 'ALREADY_REGISTERED' || response.responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
-          this.snack.open(response.message || 'You are already registered. Your details have been sent to your email.', 'Close', { duration: 5000 });
+          this.openAlert('warning', response.message || 'You are already registered. Your details have been sent to your email.');
           return;
         }
 
         if (!this.canProceedToOtp(response.responseCode)) {
-          this.snack.open(response.message || 'Registration could not continue. Please try again.', 'Close', { duration: 5000 });
+          this.openAlert('error', response.message || 'Registration could not continue. Please try again.');
           return;
         }
 
@@ -148,7 +149,7 @@ export class Registration implements OnInit {
       error: (error) => {
         this.isLoading = false;
         const message = error?.error?.message || 'Failed to send OTP. Please try again.';
-        this.snack.open(message, 'Close', { duration: 5000 });
+        this.openAlert('error', message);
       }
     });
   }
@@ -169,8 +170,17 @@ export class Registration implements OnInit {
       error: () => {
         this.isEventLoading = false;
         this.eventError = 'Unable to load the 2026 event. Please refresh and try again.';
-        this.snack.open(this.eventError, 'Close', { duration: 4000 });
+        this.openAlert('error', this.eventError);
       }
+    });
+  }
+
+  private openAlert(type: AlertDialogType, message: string, title?: string): void {
+    this.dialog.open(AlertDialog, {
+      width: '420px',
+      panelClass: 'alert-dialog-panel',
+      disableClose: false,
+      data: { type, message, title }
     });
   }
 }
