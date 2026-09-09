@@ -105,9 +105,10 @@ export class Register implements OnInit {
           volunteerHostelCaptain: false
         });
       },
-      error: () => {
+      error: (error) => {
         this.isLoading = false;
-        this.snack.open('Failed to send OTP. Please try again.', 'Close', { duration: 3000 });
+        const message = error?.error?.message || 'Failed to send OTP. Please try again.';
+        this.snack.open(message, 'Close', { duration: 5000 });
       }
     });
   }
