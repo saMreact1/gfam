@@ -2,7 +2,7 @@ import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -13,6 +13,7 @@ import {
   RegistrationStatus,
   PagedAttendeeResponse
 } from '../../../../core/services/attendee.service';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 export interface Attendee {
   id: number;
@@ -57,7 +58,7 @@ export class Attendees implements OnDestroy {
 
   constructor(
     private attendeeService: AttendeeService,
-    private snack: MatSnackBar
+    private dialog: MatDialog
   ) {
     // Debounce search input
     this.searchSubject.pipe(
@@ -100,12 +101,12 @@ export class Attendees implements OnDestroy {
             search: this.searchQuery
           });
         } else {
-          this.snack.open(response.message || 'Failed to load attendees', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Failed to load attendees' } as AlertDialogData });
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open('Failed to load attendees. Please try again.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Failed to load attendees. Please try again.' } as AlertDialogData });
       }
     });
   }
@@ -185,11 +186,11 @@ export class Attendees implements OnDestroy {
         a.download = 'current-attendees-2026.csv';
         a.click();
         window.URL.revokeObjectURL(url);
-        this.snack.open('Attendees list downloaded successfully!', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Attendees list downloaded successfully!' } as AlertDialogData });
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open('Failed to download attendees list. Please try again.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Failed to download attendees list. Please try again.' } as AlertDialogData });
       }
     });
   }

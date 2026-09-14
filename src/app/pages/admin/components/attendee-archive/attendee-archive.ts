@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -13,6 +13,7 @@ import {
   MinisterRole,
   RegistrationStatus
 } from '../../../../core/services/attendee.service';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 export interface ArchivedAttendee {
   id: number;
@@ -66,7 +67,7 @@ export class AttendeeArchive implements OnInit, OnDestroy {
 
   constructor(
     private attendeeService: AttendeeService,
-    private snack: MatSnackBar
+    private dialog: MatDialog
   ) {
     this.searchSubject.pipe(
       debounceTime(500),
@@ -178,11 +179,11 @@ export class AttendeeArchive implements OnInit, OnDestroy {
         link.download = `archived-attendees-${this.selectedEvent?.eventId}.csv`;
         link.click();
         window.URL.revokeObjectURL(url);
-        this.snack.open('Archive CSV downloaded successfully.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: 'Archive CSV downloaded successfully.' } as AlertDialogData });
       },
       error: (err) => {
         this.isLoadingAttendees = false;
-        this.snack.open(err.error?.message || 'Unable to download archive CSV.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: err.error?.message || 'Unable to download archive CSV.' } as AlertDialogData });
       }
     });
   }

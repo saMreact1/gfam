@@ -4,9 +4,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { AdminAuthService, UserResponse } from '../../../../core/services/admin-auth.service';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-users',
@@ -17,7 +18,7 @@ import { AdminAuthService, UserResponse } from '../../../../core/services/admin-
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatSnackBarModule,
+    MatDialogModule,
     MatChipsModule
   ],
   templateUrl: './users.html',
@@ -30,7 +31,7 @@ export class Users implements OnInit {
 
   constructor(
     private authService: AdminAuthService,
-    private snack: MatSnackBar
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -48,7 +49,7 @@ export class Users implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open('Failed to load users', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Failed to load users' } as AlertDialogData });
       }
     });
   }
@@ -59,12 +60,12 @@ export class Users implements OnInit {
     this.authService.deactivateUser(user.id).subscribe({
       next: (response) => {
         if (response.responseCode === '00') {
-          this.snack.open('User deactivated successfully', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: 'User deactivated successfully' } as AlertDialogData });
           this.loadUsers();
         }
       },
       error: (err) => {
-        this.snack.open('Failed to deactivate user', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Failed to deactivate user' } as AlertDialogData });
       }
     });
   }

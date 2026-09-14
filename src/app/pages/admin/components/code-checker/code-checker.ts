@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { VerificationService, VerifyResponse } from '../../../../core/services/verification.service';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-code-checker',
@@ -16,13 +17,13 @@ export class CodeChecker {
   alreadyCheckedIn = false;
 
   constructor(
-    private snack: MatSnackBar,
+    private dialog: MatDialog,
     private verificationService: VerificationService
   ) {}
 
   checkCode() {
     if (!this.enteredCode.trim()) {
-      this.snack.open('Please enter a code', 'Close', { duration: 3000 });
+      this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: 'Please enter a code' } as AlertDialogData });
       return;
     }
 
@@ -38,24 +39,18 @@ export class CodeChecker {
           this.attendee = response.data;
           this.notFound = false;
           this.alreadyCheckedIn = false;
-          this.snack.open(response.message || 'Attendee verified successfully!', 'Close', {
-            duration: 3000,
-            panelClass: ['success-snackbar']
-          });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: response.message || 'Attendee verified successfully!' } as AlertDialogData });
         } else if (response.responseCode === '05' && response.data) {
           // User is already checked in
           this.attendee = response.data;
           this.notFound = false;
           this.alreadyCheckedIn = true;
-          this.snack.open(response.message || 'Attendee is already checked in!', 'Close', {
-            duration: 5000,
-            panelClass: ['warning-snackbar']
-          });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: response.message || 'Attendee is already checked in!' } as AlertDialogData });
         } else {
           this.attendee = null;
           this.notFound = true;
           this.alreadyCheckedIn = false;
-          this.snack.open(response.message || 'Attendee not found', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Attendee not found' } as AlertDialogData });
         }
       },
       error: (err) => {
@@ -63,7 +58,7 @@ export class CodeChecker {
         this.attendee = null;
         this.notFound = true;
         this.alreadyCheckedIn = false;
-        this.snack.open('No attendee found with that code', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'No attendee found with that code' } as AlertDialogData });
       }
     });
   }

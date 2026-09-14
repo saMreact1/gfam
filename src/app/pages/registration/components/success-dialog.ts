@@ -44,9 +44,9 @@ export interface SuccessDialogData {
           <div class="detail-item">
             <strong>Prayer Time:</strong> {{ data.data.prayerTime }}
           </div>
-          <div class="detail-item">
-            <strong>Prayer Color:</strong> {{ data.data.prayerColor }}
-          </div>
+<!--          <div class="detail-item">-->
+<!--            <strong>Prayer Color:</strong> {{ data.data.prayerColor }}-->
+<!--          </div>-->
           <div class="detail-item">
             <strong>Mobilization Coordinator:</strong> {{ data.data.coordinatorName }}
           </div>

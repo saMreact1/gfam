@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Register } from '../../core/services/register';
-import { AlertDialog, AlertDialogType } from './components/alert-dialog';
+import { AlertDialog, AlertDialogType } from '../../shared/components/alert-dialog';
 
 export interface RegistrationResponse {
   success: boolean;

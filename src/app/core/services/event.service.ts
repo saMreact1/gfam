@@ -26,7 +26,8 @@ interface ApiResponse<T> {
   providedIn: 'root'
 })
 export class EventService {
-  private api = 'https://api.graceforallmenministry.org/api/v1';
+  // private api = 'https://api.graceforallmenministry.org/api/v1';
+  private api = 'http://localhost:8080/api/v1';
   private readonly currentEventKey = '72hours-2026';
   private currentEvent?: EventRegistrationPageResponse;
   private currentEventRequest$?: Observable<EventRegistrationPageResponse>;

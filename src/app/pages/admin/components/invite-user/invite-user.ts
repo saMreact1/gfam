@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { AdminAuthService, Role } from '../../../../core/services/admin-auth.service';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-invite-user',
@@ -17,7 +17,6 @@ export class InviteUser {
 
   constructor(
     private fb: FormBuilder,
-    private snack: MatSnackBar,
     private dialog: MatDialog,
     private authService: AdminAuthService
   ) {
@@ -47,18 +46,15 @@ export class InviteUser {
       next: (response) => {
         this.isLoading = false;
         if (response.responseCode === '00' && response.data) {
-          this.snack.open(response.message || 'User invited successfully! An email has been sent.', 'Close', {
-            duration: 5000,
-            panelClass: ['success-snackbar']
-          });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: response.message || 'User invited successfully!' } as AlertDialogData });
           this.inviteForm.reset({ role: Role.USER });
         } else {
-          this.snack.open(response.message || 'Failed to invite user', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Failed to invite user' } as AlertDialogData });
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open('Failed to invite user. Please try again.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Failed to invite user. Please try again.' } as AlertDialogData });
       }
     });
   }

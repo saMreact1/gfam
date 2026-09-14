@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { Register } from '../../core/services/register';
 import { SuccessDialog } from '../registration/components/success-dialog';
+import { AlertDialog, AlertDialogData } from '../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-otp-verification',
@@ -29,7 +29,6 @@ export class OtpVerification implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private snack: MatSnackBar,
     private dialog: MatDialog,
     private reg: Register
   ) {
@@ -69,20 +68,20 @@ export class OtpVerification implements OnInit, OnDestroy {
       next: (response) => {
         this.isLoading = false;
         if (response.responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
-          this.snack.open(response.message || 'Registration could not continue. Please check your details.', 'Close', { duration: 5000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: response.message || 'Registration could not continue. Please check your details.' } as AlertDialogData });
           this.router.navigate(['/register']);
           return;
         }
 
         this.expiresInMinutes = response.expiresInMinutes;
-        this.snack.open(`OTP sent to ${this.email}`, 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: `OTP sent to ${this.email}` } as AlertDialogData });
 
         // Start countdown timer
         this.startCountdown();
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open(err?.error?.message || 'Failed to send OTP. Please try again.', 'Close', { duration: 5000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: err?.error?.message || 'Failed to send OTP. Please try again.' } as AlertDialogData });
       }
     });
   }
@@ -108,12 +107,12 @@ export class OtpVerification implements OnInit, OnDestroy {
           });
         } else {
           this.isVerifying = false;
-          this.snack.open(response.message || 'Invalid OTP. Please try again.', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Invalid OTP. Please try again.' } as AlertDialogData });
         }
       },
       error: (err) => {
         this.isVerifying = false;
-        this.snack.open('OTP verification failed. Please try again.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'OTP verification failed. Please try again.' } as AlertDialogData });
       }
     });
   }
@@ -154,14 +153,14 @@ export class OtpVerification implements OnInit, OnDestroy {
         next: (response) => {
           this.isLoading = false;
           this.expiresInMinutes = response.expiresInMinutes;
-          this.snack.open(`OTP resent to ${this.email}`, 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: `OTP resent to ${this.email}` } as AlertDialogData });
 
           // Start countdown timer
           this.startCountdown();
         },
         error: (err) => {
           this.isLoading = false;
-          this.snack.open('Failed to resend OTP. Please try again.', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Failed to resend OTP. Please try again.' } as AlertDialogData });
         }
       });
     }

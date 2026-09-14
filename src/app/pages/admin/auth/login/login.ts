@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { AdminAuthService } from '../../../../core/services/admin-auth.service';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-admin-login',
@@ -18,7 +19,7 @@ export class AdminLogin {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private snack: MatSnackBar,
+    private dialog: MatDialog,
     private authService: AdminAuthService
   ) {
     this.loginForm = this.fb.group({
@@ -37,15 +38,15 @@ export class AdminLogin {
       next: (response) => {
         this.isLoading = false;
         if (response.responseCode === '00' && response.data) {
-          this.snack.open(response.message || 'Login successful!', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: response.message || 'Login successful!' } as AlertDialogData });
           this.router.navigate(['/admin']);
         } else {
-          this.snack.open(response.message || 'Login failed', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Login failed' } as AlertDialogData });
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open('Login failed. Please check your credentials.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Login failed. Please check your credentials.' } as AlertDialogData });
       }
     });
   }

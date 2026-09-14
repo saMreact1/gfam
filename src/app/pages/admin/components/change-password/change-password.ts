@@ -6,9 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AdminAuthService } from '../../../../core/services/admin-auth.service';
 import { Router } from '@angular/router';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-change-password',
@@ -21,7 +22,7 @@ import { Router } from '@angular/router';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatSnackBarModule
+    MatDialogModule
   ],
   templateUrl: './change-password.html',
   styleUrls: ['./change-password.scss']
@@ -36,7 +37,7 @@ export class ChangePassword {
   constructor(
     private fb: FormBuilder,
     private authService: AdminAuthService,
-    private snack: MatSnackBar,
+    private dialog: MatDialog,
     private router: Router
   ) {
     this.changePasswordForm = this.fb.group({
@@ -59,7 +60,7 @@ export class ChangePassword {
 
   onSubmit() {
     if (this.changePasswordForm.invalid) {
-      this.snack.open('Please fill all fields correctly', 'Close', { duration: 3000 });
+      this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: 'Please fill all fields correctly' } as AlertDialogData });
       return;
     }
 
@@ -70,10 +71,7 @@ export class ChangePassword {
       next: (response) => {
         this.isLoading = false;
         if (response.responseCode === '00') {
-          this.snack.open('Password changed successfully! Please login again.', 'Close', { 
-            duration: 4000,
-            panelClass: ['success-snackbar']
-          });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: 'Password changed successfully! Please login again.' } as AlertDialogData });
           
           // Logout and redirect to login after 2 seconds
           setTimeout(() => {
@@ -81,13 +79,13 @@ export class ChangePassword {
             this.router.navigate(['/admin/login']);
           }, 2000);
         } else {
-          this.snack.open(response.message || 'Failed to change password', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Failed to change password' } as AlertDialogData });
         }
       },
       error: (err) => {
         this.isLoading = false;
         const errorMessage = err.error?.message || 'Current password is incorrect';
-        this.snack.open(errorMessage, 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: errorMessage } as AlertDialogData });
       }
     });
   }

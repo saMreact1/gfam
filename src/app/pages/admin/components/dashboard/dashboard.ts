@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration } from 'chart.js';
 import { DashboardService, DashboardStatsResponse } from '../../../../core/services/dashboard.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-dashboard',
@@ -101,7 +102,7 @@ export class Dashboard implements OnInit {
 
   constructor(
     private dashboardService: DashboardService,
-    private snack: MatSnackBar
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -116,12 +117,12 @@ export class Dashboard implements OnInit {
         if (response.responseCode === '00' && response.data) {
           this.updateDashboardData(response.data);
         } else {
-          this.snack.open(response.message || 'Failed to load dashboard stats', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Failed to load dashboard stats' } as AlertDialogData });
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open('Failed to load dashboard stats. Please try again.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Failed to load dashboard stats. Please try again.' } as AlertDialogData });
       }
     });
   }

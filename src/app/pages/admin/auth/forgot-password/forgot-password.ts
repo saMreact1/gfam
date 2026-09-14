@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { AdminAuthService } from '../../../../core/services/admin-auth.service';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-forgot-password',
@@ -18,7 +19,7 @@ export class ForgotPassword {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private snack: MatSnackBar,
+    private dialog: MatDialog,
     private authService: AdminAuthService
   ) {
     this.forgotPasswordForm = this.fb.group({
@@ -37,14 +38,14 @@ export class ForgotPassword {
         this.isLoading = false;
         if (response.responseCode === '00') {
           this.emailSent = true;
-          this.snack.open(response.message || 'Password reset link sent to your email!', 'Close', { duration: 5000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: response.message || 'Password reset link sent to your email!' } as AlertDialogData });
         } else {
-          this.snack.open(response.message || 'Failed to send reset link', 'Close', { duration: 3000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Failed to send reset link' } as AlertDialogData });
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.snack.open('Failed to send reset link. Please try again.', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Failed to send reset link. Please try again.' } as AlertDialogData });
       }
     });
   }
@@ -58,4 +59,3 @@ export class ForgotPassword {
     this.onSubmit();
   }
 }
-

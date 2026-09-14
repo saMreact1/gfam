@@ -34,7 +34,6 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AdminLogin } from './pages/admin/auth/login/login';
 import { ForgotPassword } from './pages/admin/auth/forgot-password/forgot-password';
 import { InviteUser } from './pages/admin/components/invite-user/invite-user';
@@ -80,8 +79,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
     MatMenuModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatProgressSpinnerModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

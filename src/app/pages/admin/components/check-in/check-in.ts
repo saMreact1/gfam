@@ -1,6 +1,7 @@
 import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { CheckInResponse, CheckInService } from '../../../../core/services/check-in.service';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 type CheckInState = 'idle' | 'success' | 'already-checked-in' | 'invalid';
 
@@ -47,7 +48,7 @@ export class CheckIn implements OnInit, OnDestroy {
 
   constructor(
     private checkInService: CheckInService,
-    private snack: MatSnackBar,
+    private dialog: MatDialog,
     private zone: NgZone
   ) {}
 
@@ -117,7 +118,7 @@ export class CheckIn implements OnInit, OnDestroy {
   submitManualCheckIn(): void {
     const code = this.extractRegistrationCode(this.enteredCode);
     if (!code) {
-      this.snack.open('Please enter a registration code', 'Close', { duration: 3000 });
+      this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: 'Please enter a registration code' } as AlertDialogData });
       return;
     }
 
@@ -233,7 +234,7 @@ export class CheckIn implements OnInit, OnDestroy {
 
     if (!code) {
       this.checkInState = 'invalid';
-      this.snack.open('No registration code found in the scan', 'Close', { duration: 3000 });
+      this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: 'No registration code found in the scan' } as AlertDialogData });
       return;
     }
 
@@ -252,33 +253,27 @@ export class CheckIn implements OnInit, OnDestroy {
         if (response.responseCode === '00') {
           this.checkInState = 'success';
           this.feedbackMessage = response.message || 'The attendee has been checked in successfully.';
-          this.snack.open(response.message || 'Attendee checked in successfully', 'Close', {
-            duration: 3000,
-            panelClass: ['success-snackbar']
-          });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: response.message || 'Attendee checked in successfully' } as AlertDialogData });
           return;
         }
 
         if (response.responseCode === '05') {
           this.checkInState = 'already-checked-in';
           this.feedbackMessage = response.message || 'This registration was previously checked in.';
-          this.snack.open(response.message || 'Attendee already checked in', 'Close', {
-            duration: 4000,
-            panelClass: ['warning-snackbar']
-          });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: response.message || 'Attendee already checked in' } as AlertDialogData });
           return;
         }
 
         this.checkInState = 'invalid';
         this.feedbackMessage = response.message || 'This code could not be checked in.';
-        this.snack.open(response.message || 'Invalid registration', 'Close', { duration: 4000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Invalid registration' } as AlertDialogData });
       },
       error: (err) => {
         this.isLoading = false;
         this.attendee = err.error?.data || null;
         this.checkInState = 'invalid';
         this.feedbackMessage = err.error?.message || 'Unable to check in this registration.';
-        this.snack.open(this.feedbackMessage, 'Close', { duration: 4000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: this.feedbackMessage } as AlertDialogData });
       }
     });
   }

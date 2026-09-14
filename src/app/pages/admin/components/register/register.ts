@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Register as RegisterService } from '../../../../core/services/register';
 import { SuccessDialog } from '../../../registration/components/success-dialog';
 import { OtpSendingDialog } from '../modals/otp-sending';
 import { OtpVerifyDialog } from '../modals/otp-verify';
+import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +27,6 @@ export class Register implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private snack: MatSnackBar,
     private dialog: MatDialog,
     private registerService: RegisterService
   ) {
@@ -78,12 +77,12 @@ export class Register implements OnInit {
 
   onSubmit() {
     if (this.isEventLoading || !this.currentEventId) {
-      this.snack.open('Event is still loading. Please try again in a moment.', 'Close', { duration: 3000 });
+      this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: 'Event is still loading. Please try again in a moment.' } as AlertDialogData });
       return;
     }
 
     if (this.registrationForm.invalid) {
-      this.snack.open('Please fill all required fields correctly', 'Close', { duration: 3000 });
+      this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'warning', message: 'Please fill all required fields correctly' } as AlertDialogData });
       return;
     }
 
@@ -108,7 +107,7 @@ export class Register implements OnInit {
         const responseCode = response.responseCode;
 
         if (responseCode === 'REGISTRATION_IDENTITY_CONFLICT') {
-          this.snack.open(response.message || 'Identity conflict detected', 'Close', { duration: 4000 });
+          this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: response.message || 'Identity conflict detected' } as AlertDialogData });
           return;
         }
 
@@ -117,7 +116,7 @@ export class Register implements OnInit {
       error: (err) => {
         this.isLoading = false;
         const message = err.error?.message || 'Failed to send OTP. Please try again.';
-        this.snack.open(message, 'Close', { duration: 4000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message } as AlertDialogData });
       }
     });
   }
@@ -200,11 +199,11 @@ export class Register implements OnInit {
   private resendOtp(email: string) {
     this.registerService.resendOtp(email).subscribe({
       next: () => {
-        this.snack.open('OTP resent successfully', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: 'OTP resent successfully' } as AlertDialogData });
         this.openOtpVerifyDialog(email);
       },
       error: (err) => {
-        this.snack.open(err.error?.message || 'Failed to resend OTP', 'Close', { duration: 3000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: err.error?.message || 'Failed to resend OTP' } as AlertDialogData });
         this.openOtpVerifyDialog(email);
       }
     });
@@ -221,7 +220,7 @@ export class Register implements OnInit {
       },
       error: () => {
         this.isEventLoading = false;
-        this.snack.open('Unable to load the 2026 event. Please refresh and try again.', 'Close', { duration: 4000 });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Unable to load the 2026 event. Please refresh and try again.' } as AlertDialogData });
       }
     });
   }
