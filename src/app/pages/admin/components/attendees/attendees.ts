@@ -186,7 +186,7 @@ export class Attendees implements OnDestroy {
         a.download = 'current-attendees-2026.csv';
         a.click();
         window.URL.revokeObjectURL(url);
-        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'error', message: 'Attendees list downloaded successfully!' } as AlertDialogData });
+        this.dialog.open(AlertDialog, { width: '420px', disableClose: true, data: { type: 'success', message: 'Attendees list downloaded successfully!' } as AlertDialogData });
       },
       error: (err) => {
         this.isLoading = false;
