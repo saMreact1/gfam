@@ -17,7 +17,7 @@
   <div *ngIf="!isLoading">
     <!-- Stats Cards -->
     <div class="cards-grid">
-      <mat-card class="stat-card total">
+      <mat-card class="stat-card total" (click)="showAttendees('total')">
         <div class="stat-icon">
           <mat-icon>people</mat-icon>
         </div>
@@ -28,7 +28,7 @@
         </div>
       </mat-card>
 
-      <mat-card class="stat-card attended">
+      <mat-card class="stat-card attended" (click)="showAttendees('attended')">
         <div class="stat-icon">
           <mat-icon>check_circle</mat-icon>
         </div>
@@ -39,7 +39,7 @@
         </div>
       </mat-card>
 
-      <mat-card class="stat-card pending">
+      <mat-card class="stat-card pending" (click)="showAttendees('pending')">
         <div class="stat-icon">
           <mat-icon>schedule</mat-icon>
         </div>
@@ -50,7 +50,7 @@
         </div>
       </mat-card>
 
-      <mat-card class="stat-card virtual">
+      <mat-card class="stat-card virtual" (click)="showAttendees('virtual')">
         <div class="stat-icon">
           <mat-icon>computer</mat-icon>
         </div>

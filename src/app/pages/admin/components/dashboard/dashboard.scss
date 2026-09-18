@@ -102,6 +102,7 @@
         border: 1px solid #e9ecef;
         position: relative;
         overflow: hidden;
+        cursor: pointer;
 
         &::before {
             content: '';
@@ -110,6 +111,15 @@
             left: 0;
             right: 0;
             height: 4px;
+        }
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+
+        &:active {
+            transform: translateY(-2px) scale(0.98);
         }
 
         &.total::before {
@@ -126,11 +136,6 @@
 
         &.virtual::before {
             background: linear-gradient(90deg, #9c27b0 0%, #7b1fa2 100%);
-        }
-
-        &:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
         }
 
         .stat-icon {

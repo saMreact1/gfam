@@ -3,6 +3,8 @@ import { ChartConfiguration } from 'chart.js';
 import { DashboardService, DashboardStatsResponse } from '../../../../core/services/dashboard.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialog, AlertDialogData } from '../../../../shared/components/alert-dialog';
+import { AttendanceListDialog, AttendanceListDialogData } from '../modals/attendance-list-dialog';
+import { RegistrationStatus } from '../../../../core/services/attendee.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -170,5 +172,25 @@ export class Dashboard implements OnInit {
 
   refreshDashboard() {
     this.loadDashboardStats();
+  }
+
+  showAttendees(category: 'total' | 'attended' | 'pending' | 'virtual') {
+    const categories: Record<string, { title: string; accent: 'total' | 'attended' | 'pending' | 'virtual'; status: RegistrationStatus | 'all' }> = {
+      total: { title: 'Total Registered', accent: 'total', status: 'all' },
+      attended: { title: 'Attended', accent: 'attended', status: RegistrationStatus.CHECKED_IN },
+      pending: { title: 'Pending', accent: 'pending', status: RegistrationStatus.REGISTERED },
+      virtual: { title: 'Virtual', accent: 'virtual', status: RegistrationStatus.VIRTUAL }
+    };
+
+    const config = categories[category];
+    this.dialog.open(AttendanceListDialog, {
+      width: '860px',
+      maxWidth: '95vw',
+      data: {
+        title: config.title,
+        accent: config.accent,
+        status: config.status
+      } as AttendanceListDialogData
+    });
   }
 }

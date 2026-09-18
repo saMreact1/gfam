@@ -1,0 +1,213 @@
+.attendance-dialog {
+  min-width: 320px;
+  max-width: 100%;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  &.accent-total::before {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  }
+
+  &.accent-attended::before {
+    background: linear-gradient(90deg, #4caf50 0%, #2e7d32 100%);
+  }
+
+  &.accent-pending::before {
+    background: linear-gradient(90deg, #ff9800 0%, #f57c00 100%);
+  }
+
+  &.accent-virtual::before {
+    background: linear-gradient(90deg, #9c27b0 0%, #7b1fa2 100%);
+  }
+
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 1.5rem 1rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.06) 0%, rgba(118, 75, 162, 0.06) 100%);
+    border-bottom: 1px solid #e9ecef;
+
+    .header-icon {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+
+      mat-icon {
+        color: #667eea;
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+
+    .header-text {
+      flex: 1;
+
+      h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1a1a2e;
+      }
+
+      p {
+        margin: 0.25rem 0 0;
+        font-size: 0.85rem;
+        color: #6c757d;
+      }
+    }
+
+    .close-btn {
+      flex-shrink: 0;
+
+      mat-icon {
+        color: #999;
+      }
+    }
+  }
+
+  mat-dialog-content {
+    padding: 1rem 1.5rem;
+    max-height: 60vh;
+    min-height: 160px;
+    overflow: auto;
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    gap: 1rem;
+
+    p {
+      color: #667eea;
+      font-size: 1rem;
+      font-weight: 500;
+      margin: 0;
+    }
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    gap: 1rem;
+    text-align: center;
+
+    mat-icon {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      color: #ced4da;
+    }
+
+    p {
+      color: #6c757d;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+  }
+
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+  }
+
+  th, td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  th {
+    font-weight: 700;
+    background: #f8f9fa;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  tr {
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  .attendee-name {
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+
+  .role-badge {
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(102, 126, 234, 0.12);
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.25);
+  }
+
+  .code-badge {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+
+  mat-paginator {
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 0 0 16px 16px;
+    padding: 0.5rem;
+
+    ::ng-deep .mat-mdc-paginator-container {
+      justify-content: center;
+      padding: 0.5rem 0;
+    }
+  }
+
+  mat-dialog-actions {
+    padding: 0.5rem 1.5rem 1.25rem;
+  }
+}

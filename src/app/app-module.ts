@@ -37,6 +37,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AdminLogin } from './pages/admin/auth/login/login';
 import { ForgotPassword } from './pages/admin/auth/forgot-password/forgot-password';
 import { InviteUser } from './pages/admin/components/invite-user/invite-user';
+import { AttendanceListDialog } from './pages/admin/components/modals/attendance-list-dialog';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 @NgModule({
@@ -55,6 +56,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
     AdminLogin,
     ForgotPassword,
     InviteUser,
+    AttendanceListDialog,
   ],
   imports: [
     BrowserModule,

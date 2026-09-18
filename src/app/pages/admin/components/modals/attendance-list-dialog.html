@@ -1,0 +1,89 @@
+<div class="attendance-dialog" [ngClass]="'accent-' + data.accent">
+  <div class="dialog-header">
+    <div class="header-icon">
+      <mat-icon>people</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2>{{ data.title }}</h2>
+      <p>{{ totalElements }} Attendee{{ totalElements === 1 ? '' : 's' }}</p>
+    </div>
+    <button class="close-btn" mat-icon-button [mat-dialog-close] aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading attendees...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && dataSource.data.length === 0">
+      <mat-icon>person_search</mat-icon>
+      <p>No attendees found in this category.</p>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container" *ngIf="!isLoading && dataSource.data.length > 0">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+
+        <!-- Name -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="attendee-name">{{ element.firstName }} {{ element.lastName }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Email -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        </ng-container>
+
+        <!-- Phone -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef> Phone </th>
+          <td mat-cell *matCellDef="let element">{{ element.phone || 'N/A' }}</td>
+        </ng-container>
+
+        <!-- Role -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef> Role </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="role-badge">{{ element.role }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Code -->
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef> Tag Code </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="code-badge">{{ element.code }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator
+        [length]="totalElements"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button [mat-dialog-close]>
+      <mat-icon>close</mat-icon>
+      Close
+    </button>
+  </mat-dialog-actions>
+</div>
